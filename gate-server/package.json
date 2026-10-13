@@ -1,0 +1,25 @@
+{
+  "name": "cisf-gate-server",
+  "private": true,
+  "version": "2.0.0",
+  "description": "CISF Gate Management System — API server (Express + PostgreSQL)",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/server.js",
+    "dev": "node --env-file-if-exists=.env --watch src/server.js",
+    "inspect-db": "node --env-file-if-exists=.env scripts/inspect-db.js",
+    "create-user": "node --env-file-if-exists=.env scripts/create-user.js",
+    "test": "node --env-file-if-exists=.env --test test/",
+    "generate": "node --env-file-if-exists=.env scripts/generate-records.js",
+    "try-search": "node --env-file-if-exists=.env scripts/try-search.js",
+    "check-password": "node --env-file-if-exists=.env scripts/check-password.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "express": "^5.1.0",
+    "pg": "^8.23.1"
+  }
+}

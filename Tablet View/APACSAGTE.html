@@ -1,0 +1,4026 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Government of India — CISF Gate Display System, Chennai Port Authority" />
+  <title>Government of India — CISF Gate Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* Font: Inter (Google Fonts) + Courier New for live data */
+
+    :root {
+      --navy: #001e6e;
+      --navy-dark: #000d3a;
+      --navy-mid: #003580;
+      --navy-light: #1a4da0;
+      --saffron: #e87000;
+      --saffron-light: #ff9933;
+      --green: #0c5c1e;
+      --green-mid: #138808;
+      --white: #ffffff;
+
+      /* ── WHITE GLASSMORPHISM TOKENS ── */
+      /* Page: clean bright white gradient */
+      --bg-page-start: #f0f4ff;
+      /* very light lavender-white */
+      --bg-page-end: #e8eff8;
+      /* pale sky blue-white */
+      --bg-page-mid: #fafcff;
+      /* near-pure white */
+
+      /* Glass card layers — white frosted */
+      --glass-bg: rgba(255, 255, 255, 0.72);
+      --glass-bg-rich: rgba(255, 255, 255, 0.85);
+      --glass-bg-hover: rgba(255, 255, 255, 0.92);
+      --glass-blur: 16px;
+
+      /* Status glow tokens — soft, on white bg */
+      --glow-ok:
+        0 0 0 1px rgba(52, 211, 153, 0.2),
+        0 4px 20px rgba(52, 211, 153, 0.14), 0 8px 32px rgba(0, 80, 40, 0.07);
+      --glow-deny:
+        0 0 0 1px rgba(248, 113, 113, 0.22),
+        0 4px 20px rgba(248, 113, 113, 0.16), 0 8px 32px rgba(120, 0, 0, 0.07);
+      --glow-neutral:
+        0 0 0 1px rgba(0, 30, 110, 0.07), 0 4px 20px rgba(0, 30, 110, 0.09),
+        0 1px 4px rgba(0, 0, 0, 0.05);
+      --glow-hover:
+        0 0 0 1px rgba(0, 30, 110, 0.12), 0 8px 32px rgba(0, 30, 110, 0.14),
+        0 2px 8px rgba(0, 0, 0, 0.07);
+
+      /* Text: ultra high-contrast dark on white */
+      --text: #000000;
+      --text-sub: #001845;
+      --text-muted: #000000;
+      --text-strong: #001e6e;
+
+      /* Status badge tokens — high-visibility */
+      --ok: #064e18;
+      --ok-bg: #dcfce7;
+      --ok-border: #22c55e;
+      --ok-glow: rgba(34, 197, 94, 0.3);
+      --deny: #991b1b;
+      --deny-bg: #fee2e2;
+      --deny-border: #ef4444;
+      --deny-glow: rgba(239, 68, 68, 0.25);
+      --warn: #7c2d12;
+      --warn-bg: #fef3c7;
+      --warn-border: #f59e0b;
+
+      --radius: 0px;
+      --radius-sm: 0px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100vh;
+      /* White glassmorphism base — bright, airy gradient */
+      background: linear-gradient(160deg,
+          var(--bg-page-start) 0%,
+          var(--bg-page-mid) 50%,
+          var(--bg-page-end) 100%) fixed;
+      color: var(--text);
+      font-family: "Inter", Arial, Helvetica, sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    /* Desktop: locked viewport; Mobile: full scroll */
+    @media (min-width: 769px) {
+
+      html,
+      body {
+        height: 100vh;
+        overflow: hidden;
+      }
+    }
+
+    @media (max-width: 768px) {
+
+      html,
+      body {
+        height: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TRICOLOR TOP BAR ── */
+    .tricolor {
+      display: flex;
+      height: 6px;
+      flex-shrink: 0;
+    }
+
+    .tricolor span {
+      flex: 1;
+    }
+
+    .tricolor .saffron {
+      background: var(--saffron-light);
+    }
+
+    .tricolor .white {
+      background: #ffffff;
+    }
+
+    .tricolor .green {
+      background: var(--green-mid);
+    }
+
+    /* ── GOI HEADER — executive sovereign navy with subtle sheen ── */
+    .goi-header {
+      background: linear-gradient(135deg,
+          #000f33 0%,
+          #001e6e 55%,
+          #002b85 100%);
+      color: #fff;
+      padding: 0 24px;
+      flex-shrink: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0, 10, 60, 0.25);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .goi-header-inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 0;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .goi-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .emblem {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      flex-shrink: 0;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+    }
+
+    .goi-titles h1 {
+      font-family: "Inter", Arial, Helvetica, sans-serif;
+      font-size: clamp(13px, 1.35vw, 17.5px);
+      font-weight: 900;
+      letter-spacing: 0.4px;
+      color: #ffffff;
+      line-height: 1.2;
+      text-wrap: balance;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    }
+
+    .goi-titles p {
+      font-size: clamp(9.5px, 0.9vw, 11.5px);
+      color: rgba(255, 255, 255, 0.88);
+      margin-top: 2px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    .goi-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+
+    .clock-block {
+      text-align: right;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 4px;
+      padding: 4px 14px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .clock-time {
+      font-size: clamp(16px, 1.5vw, 20px);
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 2px;
+      font-family: "Courier New", monospace;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+    }
+
+    .clock-date {
+      font-size: 10.5px;
+      color: rgba(255, 255, 255, 0.75);
+      margin-top: 1px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .system-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(34, 197, 94, 0.16);
+      border: 1.5px solid rgba(74, 222, 128, 0.45);
+      color: #4ade80;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.9px;
+      white-space: nowrap;
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.25);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+      animation: blink 1.8s ease-in-out infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.3;
+      }
+    }
+
+    /* ── SUBHEADER / INFO BAR — dark executive gold-accented strip ── */
+    .info-bar {
+      background: #000e2e;
+      border-bottom: 3.5px solid #e87000;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      padding: 0 24px;
+      flex-shrink: 0;
+    }
+
+    .info-bar-inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 0;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .info-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: nowrap;
+      flex-shrink: 0;
+    }
+
+    .pill {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 4px;
+      padding: 3px 12px;
+      min-height: 32px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    .pill-label {
+      font-size: 10px;
+      color: #fbbf24;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      font-weight: 800;
+    }
+
+    .pill-value {
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.4px;
+    }
+
+    /* ── ENTRY / EXIT BADGE ── */
+    .entry-exit-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-radius: 4px;
+      padding: 3px 14px 3px 10px;
+      cursor: pointer;
+      border: none;
+      transition:
+        background 0.2s,
+        box-shadow 0.2s,
+        transform 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+      height: 34px;
+      box-sizing: border-box;
+    }
+
+    .entry-exit-badge:hover {
+      transform: translateY(-1px);
+    }
+
+    .entry-exit-badge.entry {
+      background: linear-gradient(135deg, #065f46, #059669);
+      box-shadow:
+        0 0 14px rgba(5, 150, 105, 0.4),
+        0 2px 6px rgba(0, 0, 0, 0.2);
+      border: 1.5px solid #34d399;
+    }
+
+    .entry-exit-badge.exit {
+      background: linear-gradient(135deg, #7f1d1d, #dc2626);
+      box-shadow:
+        0 0 14px rgba(220, 38, 38, 0.4),
+        0 2px 6px rgba(0, 0, 0, 0.2);
+      border: 1.5px solid #f87171;
+    }
+
+    .ee-arrow {
+      font-size: 18px;
+      font-weight: 900;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .ee-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0px;
+    }
+
+    .ee-main {
+      font-size: 15px;
+      font-weight: 900;
+      color: #fff;
+      letter-spacing: 1.5px;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1;
+    }
+
+    .ee-sub {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      line-height: 1;
+      margin-top: 2px;
+    }
+
+    .entry-exit-badge.entry .ee-sub {
+      color: #a7f3d0;
+    }
+
+    .entry-exit-badge.exit .ee-sub {
+      color: #fecaca;
+    }
+
+    .ee-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: blink 1.2s ease-in-out infinite;
+    }
+
+    .entry-exit-badge.entry .ee-dot {
+      background: #34d399;
+      box-shadow: 0 0 6px #34d399;
+    }
+
+    .entry-exit-badge.exit .ee-dot {
+      background: #f87171;
+      box-shadow: 0 0 6px #f87171;
+    }
+
+    /* ── PAGE WRAPPER ── */
+    .page {
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 10px 20px;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ── PANEL STAGE — one verification panel at a time ──
+         The blank state and all three cards share a single grid cell.
+         JS sets data-active="visitor | vehicle | cargo | none" on .panels
+         and .is-active on the card being shown. */
+    .panels {
+      display: grid;
+      grid-template-columns: minmax(0, 900px);
+      grid-template-rows: minmax(0, 1fr);
+      justify-content: center;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .panels>.card,
+    .panels>.panel-empty {
+      grid-area: 1 / 1;
+    }
+
+    /* Hidden card. When switching panels the outgoing one goes at once,
+         so two cards never overlap mid-fade. */
+    .panels>.card {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateX(-24px);
+      transition:
+        box-shadow 0.3s ease,
+        background 0.3s ease;
+    }
+
+    /* Back to blank: the outgoing card fades out in place (0.2s) */
+    .panels[data-active="none"]>.card {
+      transition:
+        opacity 0.2s ease,
+        visibility 0s linear 0.2s,
+        transform 0s linear 0.2s,
+        box-shadow 0.3s ease,
+        background 0.3s ease;
+    }
+
+    /* Shown card: fades in and slides from the left (0.3s) */
+    .panels>.card.is-active {
+      opacity: 1;
+      visibility: visible;
+      transform: none;
+      transition:
+        opacity 0.3s ease,
+        transform 0.3s ease,
+        visibility 0s,
+        box-shadow 0.3s ease,
+        background 0.3s ease;
+    }
+
+    /* Blank state — the empty slot where a panel will appear */
+    .panel-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 32px 24px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.45);
+      border: 1.5px dashed rgba(0, 30, 110, 0.18);
+      opacity: 1;
+      visibility: visible;
+      transition:
+        opacity 0.25s ease 0.1s,
+        visibility 0s;
+    }
+
+    .panels:not([data-active="none"])>.panel-empty {
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity 0.12s ease,
+        visibility 0s linear 0.12s;
+    }
+
+    .panel-empty-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(0, 30, 110, 0.34);
+      background: rgba(0, 30, 110, 0.04);
+      border: 1.5px solid rgba(0, 30, 110, 0.14);
+    }
+
+    .panel-empty-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #23366e;
+      max-width: 36ch;
+      text-wrap: balance;
+    }
+
+    .panel-empty-hint {
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #55628a;
+    }
+
+    /* Touch screens can't hover — swap the instructions */
+    .copy-touch {
+      display: none;
+    }
+
+    @media (hover: none) {
+      .copy-hover {
+        display: none;
+      }
+
+      .copy-touch {
+        display: inline;
+      }
+    }
+
+    /* One wide panel: cap media width to match the existing height caps,
+         so camera feeds stay 16:9 and faces stay 4:3 instead of being
+         cropped into wide strips (which could cut off a plate or a face). */
+    @media (min-width: 769px) {
+      .panels .cam-box {
+        max-width: 48vh;
+        /* 27vh max-height × 16/9 */
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .panels .face-compare {
+        width: 100%;
+        max-width: calc(85.33vh + 8px);
+        /* two 4:3 faces at 32vh + gap */
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    /* Short screens (e.g. 1280×720): faces at full width would squeeze the
+         Visitor rows, so cap them at 27vh — the same cap the cameras use. */
+    @media (min-width: 769px) and (max-height: 780px) {
+      .panels .face-img {
+        max-height: 27vh;
+      }
+
+      .panels .face-compare {
+        max-width: calc(72vh + 8px);
+        /* two 4:3 faces at 27vh + gap */
+      }
+    }
+
+    /* ── VISITOR-ONLY PASS ──
+         Person arrives with only a visitor pass: no vehicle / cargo checks,
+         and the Visitor panel shows the registered face alone (no live feed). */
+    .pass-mode-btn {
+      font: inherit;
+      color: inherit;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .pass-mode-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(251, 191, 36, 0.6);
+    }
+
+    body[data-pass="visitor"] #sidebarConn1,
+    body[data-pass="visitor"] #sidebarItem2,
+    body[data-pass="visitor"] #sidebarConn2,
+    body[data-pass="visitor"] #sidebarItem3,
+    body[data-pass="visitor"] #cardVehicle,
+    body[data-pass="visitor"] #cardCargo,
+    body[data-pass="visitor"] .face-slot.live {
+      display: none !important;
+    }
+
+    body[data-pass="visitor"] .face-compare {
+      grid-template-columns: minmax(0, 42.67vh);
+      /* one 4:3 face at 32vh */
+      justify-content: center;
+    }
+
+    @media (min-width: 769px) and (max-height: 780px) {
+      body[data-pass="visitor"] .face-compare {
+        grid-template-columns: minmax(0, 36vh);
+        /* one 4:3 face at 27vh */
+      }
+    }
+
+    /* Wide screens: ID-card layout — tall portrait on the left, pass data
+         on the right, verification strip across the bottom. */
+    @media (min-width: 769px) {
+      body[data-pass="visitor"] #cardVisitor .card-body {
+        display: grid;
+        grid-template-columns: minmax(0, 34%) minmax(0, 1fr);
+        grid-template-rows: repeat(8, minmax(0, 1fr)) auto;
+        column-gap: 20px;
+        padding: 14px 18px 12px;
+      }
+
+      body[data-pass="visitor"] #cardVisitor .face-compare {
+        grid-column: 1;
+        grid-row: 1 / 9;
+        grid-template-columns: 1fr;
+        width: 100%;
+        max-width: none;
+        height: 100%;
+        min-height: 0;
+        margin: 0;
+      }
+
+      body[data-pass="visitor"] #cardVisitor .face-slot.registered {
+        height: 100%;
+        min-height: 0;
+      }
+
+      body[data-pass="visitor"] #cardVisitor .face-slot.registered .face-img {
+        flex: 1;
+        min-height: 0;
+        max-height: none;
+        aspect-ratio: auto;
+        box-shadow:
+          0 0 0 3px #138808,
+          0 8px 24px rgba(19, 136, 8, 0.22);
+      }
+
+      body[data-pass="visitor"] #cardVisitor .face-slot.registered .face-img img {
+        object-position: center 15%;
+      }
+
+      body[data-pass="visitor"] #cardVisitor .face-slot-label {
+        font-size: 12px;
+        letter-spacing: 1.2px;
+        margin-bottom: 6px;
+      }
+
+      body[data-pass="visitor"] #cardVisitor .data-row {
+        grid-column: 2;
+        padding: 0 6px;
+      }
+
+      body[data-pass="visitor"] #cardVisitor .data-row:nth-of-type(even) {
+        background: rgba(0, 30, 110, 0.035);
+      }
+
+      body[data-pass="visitor"] #cardVisitor .dr-value {
+        max-width: 68%;
+      }
+
+      body[data-pass="visitor"] #vsStrip1 {
+        grid-column: 1 / -1;
+        margin-top: 12px !important;
+      }
+    }
+
+    /* ── CARD — White glass with solid crystal-clear readability ── */
+    .card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(var(--glass-blur)) saturate(1.8);
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.8);
+      border: 1px solid rgba(0, 30, 110, 0.12);
+      border-radius: 0px !important;
+      overflow: hidden;
+      box-shadow:
+        0 4px 20px rgba(0, 30, 110, 0.1),
+        0 1px 4px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      transition:
+        box-shadow 0.3s ease,
+        background 0.3s ease;
+    }
+
+    .card:hover {
+      background: #ffffff;
+      box-shadow:
+        0 8px 30px rgba(0, 30, 110, 0.16),
+        0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Denied: red ambient glow on white glass */
+    .card.denied {
+      box-shadow:
+        0 0 0 2px rgba(239, 68, 68, 0.5),
+        0 8px 28px rgba(220, 38, 38, 0.2) !important;
+      background: rgba(255, 245, 245, 0.96) !important;
+    }
+
+    /* Card headers: rich navy/colour bands on white card */
+    .card-header {
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 0px !important;
+      flex-shrink: 0;
+    }
+
+    .card-header.blue {
+      background: linear-gradient(135deg, var(--navy-dark), var(--navy));
+      color: #fff;
+    }
+
+    .card-header.orange {
+      background: linear-gradient(135deg, #7c3200, #c05000);
+      color: #fff;
+    }
+
+    .card-header.teal {
+      background: linear-gradient(135deg, #033a26, #065f46);
+      color: #fff;
+    }
+
+    .card-title {
+      font-size: clamp(12px, 0.95vw, 14px);
+      font-weight: 700;
+      font-family: "Inter", Arial, Helvetica, sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      text-wrap: balance;
+      letter-spacing: 0.1px;
+    }
+
+    .card-body {
+      padding: 8px 12px;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── CAMERA FEED ── */
+    .cam-box {
+      width: 100%;
+      aspect-ratio: 16/9;
+      max-height: 27vh;
+      background: #0f172a;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      position: relative;
+      box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, 0.15),
+        0 4px 16px rgba(0, 0, 0, 0.18);
+      margin-bottom: 6px;
+      flex-shrink: 0;
+    }
+
+    .cam-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cam-tag {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      background: rgba(0, 0, 0, 0.85);
+      color: #ffffff;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 800;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      font-family: "Courier New", monospace;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .cam-time {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.85);
+      color: #ffffff;
+      padding: 3px 8px;
+      font-size: 10px;
+      font-weight: 800;
+      border-radius: 4px;
+      font-family: "Courier New", monospace;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    /* ── DUAL FACE COMPARE ── */
+    .face-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: end;
+      gap: 8px;
+      margin-bottom: 6px;
+      flex-shrink: 0;
+    }
+
+    .face-slot {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .face-slot-label {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #001e6e;
+      text-align: center;
+      margin-bottom: 2px;
+    }
+
+    .face-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      max-height: 32vh;
+      background: #0f172a;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .face-slot.live .face-img {
+      box-shadow:
+        0 0 0 2px #003580,
+        0 4px 14px rgba(0, 53, 128, 0.25);
+    }
+
+    .face-slot.registered .face-img {
+      box-shadow:
+        0 0 0 2px #138808,
+        0 4px 14px rgba(19, 136, 8, 0.25);
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    }
+
+    .face-slot.live .face-slot-label {
+      color: #003580;
+    }
+
+    .face-slot.registered .face-slot-label {
+      color: #0c5c1e;
+    }
+
+    /* ── LIVE CAMERA FEED EFFECT ── */
+    .face-slot.live .face-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      display: block;
+      filter: contrast(1.04) brightness(0.98);
+      animation: live-flicker 6s ease-in-out infinite;
+    }
+
+    @keyframes live-flicker {
+
+      0%,
+      100% {
+        filter: contrast(1.04) brightness(0.98);
+      }
+
+      50% {
+        filter: contrast(1.07) brightness(1.01);
+      }
+    }
+
+    /* Scanline overlay on the live feed */
+    .face-slot.live .face-img::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(0deg,
+          transparent,
+          transparent 2px,
+          rgba(0, 0, 0, 0.13) 2px,
+          rgba(0, 0, 0, 0.13) 4px);
+      pointer-events: none;
+      z-index: 2;
+      border-radius: 4px;
+    }
+
+    /* Noise / grain overlay */
+    .live-noise-overlay {
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+      background-size: 150px 150px;
+      opacity: 0.35;
+      z-index: 3;
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      animation: grain-shift 0.18s steps(1) infinite;
+    }
+
+    @keyframes grain-shift {
+      0% {
+        background-position: 0 0;
+      }
+
+      25% {
+        background-position: -20px 10px;
+      }
+
+      50% {
+        background-position: 10px -15px;
+      }
+
+      75% {
+        background-position: -5px 20px;
+      }
+
+      100% {
+        background-position: 15px -5px;
+      }
+    }
+
+    /* REC indicator */
+    .live-rec {
+      position: absolute;
+      top: 7px;
+      left: 7px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(0, 0, 0, 0.65);
+      border-radius: 3px;
+      padding: 2px 6px;
+      z-index: 10;
+    }
+
+    .live-rec-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 5px #ef4444;
+      animation: blink 1.1s ease-in-out infinite;
+    }
+
+    .live-rec-text {
+      font-size: 8px;
+      font-weight: 800;
+      color: #fff;
+      font-family: "Courier New", monospace;
+      letter-spacing: 1px;
+    }
+
+    /* Sharp registered face (properly framed and centered) */
+    .face-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      display: block;
+    }
+
+    .face-img .cam-tag,
+    .face-img .cam-time {
+      font-size: 8px;
+      padding: 2px 6px;
+    }
+
+    /* Verified match banner under the two faces */
+    .match-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--ok-bg);
+      border: 1px solid var(--ok-border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      margin-bottom: 6px;
+      flex-shrink: 0;
+    }
+
+    .match-banner .m-check {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--green);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 900;
+      box-shadow: 0 2px 6px rgba(19, 136, 8, 0.4);
+      flex-shrink: 0;
+    }
+
+    .match-banner .m-text {
+      line-height: 1.15;
+    }
+
+    .match-banner .m-text b {
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--ok);
+      letter-spacing: 0.5px;
+    }
+
+    .match-banner .m-text span {
+      display: block;
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--ok);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .match-banner .m-pct {
+      margin-left: auto;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--ok);
+      font-family: "Courier New", monospace;
+    }
+
+    /* ── DATA ROWS — ultra clear high contrast ── */
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4.5px 0;
+      border-bottom: 1px solid rgba(0, 30, 110, 0.09);
+      gap: 10px;
+      line-height: 1.3;
+      flex: 1 1 0;
+      min-height: 0;
+    }
+
+    .data-row:last-child {
+      border-bottom: none;
+    }
+
+    .dr-label {
+      font-size: 13px;
+      color: #000000 !important;
+      font-weight: 800 !important;
+      flex-shrink: 0;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    .dr-value {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #00227a;
+      text-align: right;
+      word-break: break-word;
+      max-width: 65%;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+      font-family: "Inter", Arial, sans-serif;
+    }
+
+    .dr-value.ok {
+      color: var(--ok);
+    }
+
+    .dr-value.warn {
+      color: var(--warn);
+    }
+
+    /* ── BADGES — high-contrast pill style ── */
+    .badge-ok {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #dcfce7;
+      color: #14532d;
+      border: 1.5px solid #22c55e;
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 12.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 1px 4px rgba(34, 197, 94, 0.2);
+    }
+
+    .card-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #dcfce7;
+      color: #14532d;
+      border: 1.5px solid #22c55e;
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      box-shadow: 0 1px 6px rgba(34, 197, 94, 0.25);
+    }
+
+    /* ── APPROVED BUTTON — executive high-impact action button ── */
+    .approved-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #055018 0%, #15803d 100%);
+      color: #ffffff;
+      border: 1.5px solid #22c55e;
+      border-radius: 4px;
+      padding: 4px 16px;
+      font-family: "Inter", Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      cursor: pointer;
+      box-shadow:
+        0 0 18px rgba(34, 197, 94, 0.35),
+        0 2px 6px rgba(0, 0, 0, 0.2);
+      transition:
+        background 0.2s,
+        box-shadow 0.2s,
+        transform 0.15s;
+      white-space: nowrap;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      min-width: 255px;
+      height: 34px;
+      box-sizing: border-box;
+    }
+
+    .approved-btn:hover {
+      background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+      box-shadow:
+        0 0 26px rgba(34, 197, 94, 0.5),
+        0 4px 10px rgba(0, 0, 0, 0.25);
+      transform: translateY(-1px);
+    }
+
+    .approved-btn:active {
+      transform: translateY(1px);
+    }
+
+    .appr-check {
+      font-size: 16px;
+      font-weight: 900;
+      color: #ffffff;
+    }
+
+    .access-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      /* White glass backdrop */
+      background: rgba(240, 244, 255, 0.88);
+      backdrop-filter: blur(24px) saturate(1.6);
+      -webkit-backdrop-filter: blur(24px) saturate(1.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+    }
+
+    .access-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .ag-ring {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      border: 3px solid #138808;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 0 32px rgba(19, 136, 8, 0.35),
+        inset 0 0 20px rgba(19, 136, 8, 0.1);
+      animation: blink 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    .ag-check {
+      font-size: 42px;
+      line-height: 1;
+      color: #138808;
+      font-weight: 900;
+    }
+
+    .ag-title {
+      margin-top: 16px;
+      font-family: "Inter", Arial, sans-serif;
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--navy-dark);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-wrap: balance;
+    }
+
+    .ag-sub {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-top: 6px;
+      font-family: "Courier New", monospace;
+      text-wrap: pretty;
+    }
+
+    .ag-btn {
+      margin-top: 20px;
+      padding: 10px 28px;
+      border-radius: 24px;
+      background: rgba(19, 136, 8, 0.1);
+      border: 1.5px solid rgba(19, 136, 8, 0.4);
+      color: #065f1a;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-family: inherit;
+      transition:
+        background 0.2s,
+        box-shadow 0.2s;
+      box-shadow: 0 0 12px rgba(19, 136, 8, 0.15);
+    }
+
+    .ag-btn:hover {
+      background: rgba(19, 136, 8, 0.18);
+      box-shadow: 0 0 20px rgba(19, 136, 8, 0.25);
+    }
+
+    /* ── UNVERIFIED / DENIED / WARNING STATES ── */
+    .card-status-pill.denied {
+      background: var(--deny-bg) !important;
+      color: var(--deny) !important;
+      border-color: var(--deny-border) !important;
+      box-shadow: 0 0 12px var(--deny-glow) !important;
+    }
+
+    .card-status-pill.warn {
+      background: var(--warn-bg) !important;
+      color: var(--warn) !important;
+      border-color: var(--warn-border) !important;
+    }
+
+    .badge-fail {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--deny-bg) !important;
+      color: var(--deny) !important;
+      border: 1px solid var(--deny-border) !important;
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      box-shadow: 0 0 10px var(--deny-glow) !important;
+    }
+
+    .badge-warn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--warn-bg) !important;
+      color: var(--warn) !important;
+      border: 1px solid var(--warn-border) !important;
+      border-radius: 20px;
+      padding: 2px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    /* Denied approved button: deep red */
+    .approved-btn.denied {
+      background: linear-gradient(135deg,
+          #7f1d1d 0%,
+          #dc2626 100%) !important;
+      border: none !important;
+      box-shadow:
+        0 0 18px rgba(220, 38, 38, 0.25),
+        0 2px 8px rgba(0, 0, 0, 0.12) !important;
+    }
+
+    .approved-btn.denied:hover {
+      box-shadow:
+        0 0 28px rgba(220, 38, 38, 0.4),
+        0 4px 12px rgba(0, 0, 0, 0.14) !important;
+    }
+
+    .approved-btn.denied .appr-check {
+      color: #fca5a5 !important;
+    }
+
+    /* card.denied — glow-only, warm red tint on white */
+    .card.denied {
+      box-shadow: var(--glow-deny) !important;
+      background: rgba(255, 240, 240, 0.8) !important;
+    }
+
+    .vstri-denied {
+      background: rgba(248, 113, 113, 0.08) !important;
+      box-shadow: 0 0 14px rgba(248, 113, 113, 0.18) !important;
+    }
+
+    .vstri-denied .vs-badge-box span {
+      color: #fca5a5 !important;
+    }
+
+    .vstri-denied .vs-badge-box .dot {
+      background: #ef4444 !important;
+      box-shadow: 0 0 6px #ef4444 !important;
+    }
+
+    .access-overlay.denied .ag-ring {
+      border-color: #dc2626 !important;
+      box-shadow:
+        0 0 30px rgba(220, 38, 38, 0.45),
+        inset 0 0 18px rgba(220, 38, 38, 0.12);
+    }
+
+    .access-overlay.denied .ag-check {
+      color: #dc2626;
+    }
+
+    .access-overlay.denied .ag-title {
+      color: #dc2626;
+    }
+
+    .access-overlay.denied .ag-btn {
+      background: rgba(220, 38, 38, 0.1);
+      border-color: rgba(220, 38, 38, 0.4);
+      color: #991b1b;
+    }
+
+    /* Plate input: crystal clear high visibility yellow plate */
+    .plate-number {
+      background: #fffde7;
+      color: #000000;
+      border: 2px solid #001e6e;
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-family: "Courier New", monospace;
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-align: center;
+      width: 165px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+    }
+
+    .plate-number:focus-visible {
+      outline: none;
+      border-color: #138808;
+      box-shadow:
+        0 0 0 3px rgba(19, 136, 8, 0.4),
+        0 0 12px rgba(19, 136, 8, 0.25);
+    }
+
+    .container-no {
+      background: var(--navy);
+      color: #fff;
+      border-radius: 4px;
+      padding: 1px 7px;
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .score-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .progress-bar {
+      width: 70px;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--navy), var(--green));
+      border-radius: 3px;
+    }
+
+    /* ── STATISTICS ROW ── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--navy);
+      border-radius: 8px;
+      padding: 4px 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .stat-card:nth-child(2) {
+      border-top-color: var(--saffron);
+    }
+
+    .stat-card:nth-child(3) {
+      border-top-color: var(--green);
+    }
+
+    .stat-card:nth-child(4) {
+      border-top-color: #7c3aed;
+    }
+
+    .stat-card:nth-child(5) {
+      border-top-color: #b45309;
+    }
+
+    .stat-num {
+      font-size: clamp(15px, 1.4vw, 20px);
+      font-weight: 700;
+      color: var(--navy);
+      font-family: "Courier New", monospace;
+      letter-spacing: 1px;
+    }
+
+    .stat-label {
+      font-size: 9px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* ── TICKER ── */
+    .ticker-bar {
+      background: var(--navy-dark);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      height: 32px;
+      overflow: hidden;
+      border-radius: 6px;
+      border: 1px solid var(--navy-light);
+      flex-shrink: 0;
+    }
+
+    .ticker-label {
+      background: var(--saffron);
+      color: #fff;
+      padding: 0 14px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+
+    .ticker-track {
+      flex: 1;
+      overflow: hidden;
+      padding-left: 10px;
+    }
+
+    .ticker-text {
+      display: inline-block;
+      white-space: nowrap;
+      font-size: 12px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+      animation: ticker-scroll 40s linear infinite;
+    }
+
+    @keyframes ticker-scroll {
+      0% {
+        transform: translateX(100vw);
+      }
+
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+
+    /* ── PASS VERIFIED BAR ── */
+    .pass-verified-bar {
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .pass-card {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: linear-gradient(135deg, #0a3d1f 0%, #166534 100%);
+      border: 1.5px solid #22c55e;
+      border-radius: 8px;
+      padding: 8px 18px;
+      box-shadow:
+        0 0 18px rgba(34, 197, 94, 0.18),
+        0 2px 8px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pass-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg,
+          rgba(34, 197, 94, 0.08) 0%,
+          transparent 60%);
+      pointer-events: none;
+    }
+
+    .pass-card-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(34, 197, 94, 0.18);
+      border: 2px solid #22c55e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 18px;
+    }
+
+    .pass-card-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .pass-card-title {
+      font-size: clamp(11px, 0.95vw, 14px);
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.3px;
+      font-family: Arial, Helvetica, sans-serif;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pass-card-sub {
+      font-size: 9px;
+      color: rgba(255, 255, 255, 0.6);
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-top: 1px;
+    }
+
+    .pass-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(34, 197, 94, 0.18);
+      border: 1.5px solid #22c55e;
+      border-radius: 20px;
+      padding: 5px 14px;
+      flex-shrink: 0;
+    }
+
+    .pass-badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 6px #22c55e;
+      animation: blink 1.8s ease-in-out infinite;
+    }
+
+    .pass-badge-text {
+      font-size: 11px;
+      font-weight: 800;
+      color: #4ade80;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .pass-bar-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .pass-bar-label-text {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #22c55e;
+      white-space: nowrap;
+      writing-mode: horizontal-tb;
+    }
+
+    /* ── FOOTER — navy brand strip ── */
+    .goi-footer {
+      background: var(--navy-dark);
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
+      padding: 6px 24px;
+      font-size: 10px;
+      letter-spacing: 0.4px;
+      border-top: 3px solid var(--saffron);
+      flex-shrink: 0;
+    }
+
+    .goi-footer span {
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 700;
+    }
+
+    /* ── STICKY MOBILE ACTION BAR ── */
+    /* Hidden on desktop; visible on mobile as sticky bottom bar */
+    .mobile-action-bar {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .mobile-action-bar {
+        display: flex;
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 500;
+        background: var(--navy-dark);
+        border-top: 3px solid var(--saffron);
+        padding: 10px 14px;
+        gap: 8px;
+        align-items: stretch;
+      }
+
+      .mobile-action-bar .approved-btn {
+        flex: 1;
+        min-width: 0;
+        height: 48px;
+        font-size: 13px;
+        border-radius: 10px;
+      }
+
+      /* Hide approved button from info-bar on mobile — shown in sticky bar instead */
+      .info-bar .approved-btn {
+        display: none;
+      }
+    }
+
+    /* ═══════════ RESPONSIVE ═══════════ */
+
+    /* ≤ 1280px — small laptop */
+    @media (max-width: 1280px) {
+      .panels {
+        gap: 10px;
+      }
+
+      .page {
+        padding: 8px 16px;
+      }
+    }
+
+    /* ≤ 768px — tablet portrait: single column, full scroll */
+    @media (max-width: 768px) {
+      .goi-header {
+        padding: 0 14px;
+      }
+
+      .info-bar {
+        padding: 0 14px;
+      }
+
+      .page {
+        padding: 12px 14px;
+      }
+
+      .goi-footer {
+        padding: 8px 14px;
+        font-size: 10px;
+      }
+
+      .goi-header-inner {
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 8px 0;
+        gap: 8px;
+      }
+
+      .goi-brand {
+        gap: 10px;
+      }
+
+      .emblem {
+        width: 36px;
+        height: 36px;
+      }
+
+      .goi-titles h1 {
+        font-size: 13px;
+      }
+
+      .goi-titles p {
+        font-size: 10px;
+      }
+
+      .goi-right {
+        gap: 8px;
+        flex-shrink: 1;
+      }
+
+      .clock-time {
+        font-size: 16px;
+      }
+
+      .info-bar-inner {
+        flex-wrap: wrap;
+        padding: 5px 0;
+        gap: 6px;
+      }
+
+      /* hide ee-sub text on small screens to save space */
+      .ee-sub {
+        display: none;
+      }
+
+      .entry-exit-badge {
+        min-height: 36px;
+      }
+
+      .panels {
+        grid-template-columns: 1fr;
+        grid-template-rows: none;
+        gap: 12px;
+        flex: none;
+      }
+
+      .panels .card {
+        min-height: auto;
+      }
+
+      /* The sidebar is hidden at this width, so there is nothing to hover:
+           drop the blank state and show all three panels stacked. */
+      .panels>.panel-empty {
+        display: none;
+      }
+
+      .panels[data-active]>.card {
+        grid-area: auto;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+      }
+
+      .card-body {
+        overflow: visible;
+      }
+
+      /* On mobile each card scrolls its own body */
+      .card-header {
+        padding: 10px 14px;
+      }
+
+      .card-title {
+        font-size: 13px;
+      }
+
+      .card-body {
+        padding: 10px 12px;
+      }
+
+      .data-row {
+        min-height: 36px;
+        padding: 5px 0;
+      }
+
+      .dr-label {
+        font-size: 12px;
+      }
+
+      .dr-value {
+        font-size: 13px;
+      }
+    }
+
+    /* ≤ 600px — large mobile */
+    @media (max-width: 600px) {
+      .page {
+        padding: 10px 12px 80px;
+      }
+
+      /* bottom pad for sticky bar */
+
+      .panels {
+        gap: 10px;
+      }
+
+      /* Data rows: stack label above value */
+      .data-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 2px;
+        padding: 6px 0;
+        min-height: auto;
+      }
+
+      .dr-value {
+        text-align: left;
+        max-width: 100%;
+        font-size: 14px;
+      }
+
+      .dr-label {
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+    }
+
+    /* ≤ 400px — small phone */
+    @media (max-width: 400px) {
+      .goi-header {
+        padding: 0 10px;
+      }
+
+      .info-bar {
+        padding: 0 10px;
+      }
+
+      .page {
+        padding: 8px 10px 80px;
+      }
+
+      .emblem {
+        width: 30px;
+        height: 30px;
+      }
+
+      .goi-titles h1 {
+        font-size: 11px;
+      }
+
+      .system-status {
+        display: none;
+      }
+
+      /* too cramped at 400px */
+      .clock-time {
+        font-size: 15px;
+        letter-spacing: 1px;
+      }
+    }
+
+    /* ── ACCESSIBILITY & UTILITIES ── */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 18px;
+      background: var(--saffron);
+      color: #fff;
+      padding: 8px 16px;
+      z-index: 99999;
+      font-weight: 800;
+      border-radius: 0 0 6px 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      text-decoration: none;
+      transition: top 0.2s ease;
+    }
+
+    .skip-link:focus-visible {
+      top: 0;
+    }
+
+    /* Tabular numbers for clocks, feeds, counters, and statistics */
+    .clock-time,
+    .clock-date,
+    .cam-time,
+    .plate-number,
+    .stat-num,
+    .dr-value,
+    .badge-ok,
+    .badge-fail,
+    .badge-warn,
+    .pill-value {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Focus Visible Rings */
+    button:focus-visible,
+    input:focus-visible,
+    a:focus-visible {
+      outline: 3px solid #2563eb !important;
+      outline-offset: 2px !important;
+    }
+
+    /* Target specific custom buttons to have focus rings matching their design border radius */
+    .entry-exit-badge:focus-visible {
+      outline-color: #34d399 !important;
+    }
+
+    .approved-btn:focus-visible {
+      outline-color: #22c55e !important;
+    }
+
+    .approved-btn.denied:focus-visible {
+      outline-color: #ef4444 !important;
+    }
+
+    .ag-btn:focus-visible {
+      outline-color: #22c55e !important;
+    }
+
+    #vsStrip1:focus-visible,
+    #vsStrip2:focus-visible,
+    #vsStrip3:focus-visible {
+      outline: 3px solid #22c55e !important;
+      outline-offset: 2px !important;
+    }
+
+    /* prefers-reduced-motion media query */
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-delay: -1ms !important;
+        animation-duration: 1ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0s !important;
+        scroll-behavior: auto !important;
+      }
+
+      .status-dot,
+      .ee-dot,
+      .pass-badge-dot,
+      .ag-ring {
+        animation: none !important;
+        opacity: 1 !important;
+      }
+
+      .face-slot.live .face-img img {
+        animation: none !important;
+        filter: contrast(1.04) brightness(0.98) !important;
+      }
+
+      .live-noise-overlay {
+        animation: none !important;
+        display: none !important;
+      }
+
+      .ticker-text {
+        animation: none !important;
+        white-space: normal !important;
+      }
+    }
+
+    /* ── DYNAMIC DETECTION SIDEBAR ── */
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .detection-sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #000f33 0%, #001e6e 40%, #00174d 100%);
+      border-right: 2px solid rgba(232, 112, 0, 0.6);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      overflow-x: hidden;
+      z-index: 10;
+    }
+
+    .sidebar-header {
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-section-label {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #fbbf24;
+    }
+
+    .sidebar-body {
+      flex: 1;
+      padding: 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+    }
+
+    /* Sidebar verification items — always visible.
+         Hover previews the panel; click / tap pins it. */
+    .sidebar-item {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      width: 100%;
+      margin: 0;
+      padding: 10px 10px 10px 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 8px;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transform-origin: left center;
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease;
+    }
+
+    /* Saffron accent bar on the left edge — shown on the active item */
+    .sidebar-item::before {
+      content: "";
+      position: absolute;
+      left: -1px;
+      top: 7px;
+      bottom: 7px;
+      width: 4px;
+      border-radius: 0 4px 4px 0;
+      background: var(--saffron-light);
+      box-shadow: 0 0 12px rgba(255, 153, 51, 0.75);
+      opacity: 0;
+      transform: scaleY(0.5);
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+    }
+
+    .sidebar-item.glow-ok {
+      box-shadow: 0 0 18px rgba(34, 197, 94, 0.22), 0 4px 12px rgba(0, 0, 0, 0.15);
+      background: rgba(34, 197, 94, 0.08);
+      border-color: rgba(34, 197, 94, 0.28);
+    }
+
+    .sidebar-item.glow-fail {
+      box-shadow: 0 0 18px rgba(239, 68, 68, 0.2), 0 4px 12px rgba(0, 0, 0, 0.15);
+      background: rgba(239, 68, 68, 0.08);
+      border-color: rgba(239, 68, 68, 0.28);
+    }
+
+    .sidebar-item-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px solid rgba(255, 255, 255, 0.14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      overflow: hidden;
+      transition: border-color 0.3s ease, background 0.3s ease, transform 0.2s ease;
+    }
+
+    .sidebar-item-icon img.sidebar-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .sidebar-item.glow-ok .sidebar-item-icon {
+      border-color: rgba(34, 197, 94, 0.5);
+      background: rgba(34, 197, 94, 0.12);
+    }
+
+    .sidebar-item.glow-fail .sidebar-item-icon {
+      border-color: rgba(239, 68, 68, 0.5);
+      background: rgba(239, 68, 68, 0.12);
+    }
+
+    .sidebar-item-content {
+      display: block;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sidebar-item-title {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #ffffff;
+      line-height: 1.35;
+      letter-spacing: 0.2px;
+      margin-bottom: 5px;
+    }
+
+    .sidebar-item-status {
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 2px 9px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+
+    .sidebar-badge.ok {
+      color: #4ade80;
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+    }
+
+    .sidebar-badge.fail {
+      color: #fca5a5;
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Active = the item whose panel is on screen (hovered or pinned).
+         Declared after .glow-ok / .glow-fail so it wins. */
+    .sidebar-item.is-active {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 153, 51, 0.5);
+      box-shadow:
+        -4px 0 18px rgba(255, 153, 51, 0.2),
+        0 6px 16px rgba(0, 0, 0, 0.28);
+      transform: scale(1.02);
+    }
+
+    .sidebar-item.is-active::before {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+
+    .sidebar-item.is-active .sidebar-item-title {
+      font-weight: 800;
+    }
+
+    /* Right-hand indicator: arrow while active, saffron pin while pinned */
+    .sidebar-item-indicator {
+      align-self: center;
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--saffron-light);
+      opacity: 0;
+      transform: translateX(-6px);
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+    }
+
+    .sidebar-item-indicator svg {
+      display: block;
+    }
+
+    .sidebar-item-indicator .ind-pin {
+      display: none;
+    }
+
+    .sidebar-item.is-active .sidebar-item-indicator,
+    .sidebar-item.is-pinned .sidebar-item-indicator {
+      opacity: 1;
+      transform: none;
+    }
+
+    .sidebar-item.is-pinned .sidebar-item-indicator {
+      background: var(--saffron-light);
+      color: var(--navy-dark);
+      box-shadow: 0 0 10px rgba(255, 153, 51, 0.55);
+    }
+
+    .sidebar-item.is-pinned .ind-arrow {
+      display: none;
+    }
+
+    .sidebar-item.is-pinned .ind-pin {
+      display: block;
+    }
+
+    /* Amber ring: the global blue focus ring is too dark on navy */
+    .sidebar-item:focus-visible {
+      outline: 3px solid #fbbf24 !important;
+      outline-offset: 2px !important;
+    }
+
+    /* Sidebar connector lines between items */
+    .sidebar-connector {
+      width: 2px;
+      height: 10px;
+      background: rgba(255, 255, 255, 0.06);
+      margin: 0 0 0 28px;
+      border-radius: 1px;
+      transition: background 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .sidebar-connector.active {
+      background: rgba(34, 197, 94, 0.4);
+      box-shadow: 0 0 6px rgba(34, 197, 94, 0.25);
+    }
+
+    .sidebar-connector.active-fail {
+      background: rgba(239, 68, 68, 0.4);
+      box-shadow: 0 0 6px rgba(239, 68, 68, 0.25);
+    }
+
+    /* Sidebar summary bar — always visible, reflects all three checks */
+    .sidebar-summary {
+      margin-top: auto;
+      padding: 14px 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .summary-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #065f46, #059669);
+      border: 2px solid #34d399;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 900;
+      color: #ffffff;
+      flex-shrink: 0;
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-summary.denied .summary-icon {
+      background: linear-gradient(135deg, #7f1d1d, #dc2626);
+      border-color: #f87171;
+      box-shadow: 0 0 14px rgba(220, 38, 38, 0.4);
+    }
+
+    .summary-text {
+      font-size: 11px;
+      font-weight: 900;
+      color: #4ade80;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+    }
+
+    .sidebar-summary.denied .summary-text {
+      color: #fca5a5;
+    }
+
+    /* Sidebar responsive */
+    @media (max-width: 768px) {
+      .detection-sidebar {
+        display: none;
+      }
+
+      .main-wrapper {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body data-pass="visitor">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- TRICOLOR BAR -->
+  <div class="tricolor">
+    <span class="saffron"></span>
+    <span class="white"></span>
+    <span class="green"></span>
+  </div>
+
+  <!-- MAIN HEADER -->
+  <div class="goi-header">
+    <div class="goi-header-inner">
+      <div class="goi-brand">
+        <!-- CISF Official Emblem Logo -->
+        <img src="cisf-logo.png" alt="CISF - Central Industrial Security Force Emblem" class="emblem" width="48"
+          height="48"
+          onerror="if(!this.dataset.err1){this.dataset.err1='1';this.src='cisf-logo.jpg';}else if(!this.dataset.err2){this.dataset.err2='1';this.src='Tablet View/cisf-logo.png';}else if(!this.dataset.err3){this.dataset.err3='1';this.src='Tablet View/cisf-logo.jpg';}" />
+
+        <div class="goi-titles">
+          <h1>Government of India — CISF Gate Management System</h1>
+          <p>
+            Ministry of Ports, Shipping &amp; Waterways &nbsp;|&nbsp; Chennai
+            Port Authority
+          </p>
+        </div>
+      </div>
+
+      <div class="goi-right">
+        <div class="clock-block">
+          <div class="clock-time" id="clock" aria-live="off" aria-atomic="true">
+            00:00:00
+          </div>
+          <div class="clock-date" id="date">-- --- ----</div>
+        </div>
+        <div class="system-status" role="status" aria-label="System status: Online">
+          <div class="status-dot" aria-hidden="true"></div>
+          <span>SYSTEM ONLINE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO / SUBHEADER BAR -->
+  <div class="info-bar">
+    <div class="info-bar-inner">
+      <div class="info-pills">
+        <div class="pill">
+          <span class="pill-label">Gate</span>
+          <span class="pill-value">GATE 0</span>
+        </div>
+        <div class="pill">
+          <span class="pill-label">Lane</span>
+          <span class="pill-value">Entry Lane A</span>
+        </div>
+        <button type="button" class="pill pass-mode-btn" id="passModeBtn" onclick="togglePassMode()"
+          title="Click to switch pass type">
+          <span class="pill-label">Pass</span>
+          <span class="pill-value" id="passModeValue">VISITOR ONLY</span>
+        </button>
+      </div>
+
+      <div style="
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+            flex-shrink: 0;
+            margin-left: auto;
+          ">
+        <!-- ENTRY / EXIT prominent toggle badge -->
+        <button id="eeBtn" class="entry-exit-badge entry" onclick="toggleEntryExit()"
+          aria-label="Gate mode: Entry — Click to toggle Entry / Exit" title="Click to toggle Entry / Exit">
+          <div class="ee-dot" aria-hidden="true"></div>
+          <div class="ee-text">
+            <span class="ee-main" id="eeMain">ENTRY</span>
+            <span class="ee-sub" id="eeSub">In-Gate &middot; Click to switch</span>
+          </div>
+          <span class="ee-arrow" id="eeArrow" aria-hidden="true">&#x2192;</span>
+        </button>
+
+        <!-- APPROVED ACTION BUTTON (RIGHT SIDE) -->
+        <button class="approved-btn" id="approvedGateBtn" onclick="triggerAccessApproval()"
+          title="All checks cleared — Grant access and open gate">
+          <span class="appr-check">&#x2713;</span>
+          <span>ALL CHECKS CLEARED &bull; APPROVED</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN WRAPPER: SIDEBAR + PAGE CONTENT -->
+  <div class="main-wrapper">
+
+    <!-- VERIFICATION SIDEBAR — hover a check to preview its panel; click / tap to pin it -->
+    <aside class="detection-sidebar" id="detectionSidebar" aria-labelledby="sidebarLabel">
+      <div class="sidebar-header">
+        <div class="sidebar-section-label" id="sidebarLabel">Verification Checks</div>
+      </div>
+
+      <div class="sidebar-body">
+        <!-- Sidebar Item 1: Visitor Pass -->
+        <button type="button" class="sidebar-item" id="sidebarItem1" aria-controls="cardVisitor" aria-expanded="false">
+          <span class="sidebar-item-icon" aria-hidden="true">
+            <img src="visistor-feed.png" class="sidebar-thumb" alt=""
+              onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='inline';" />
+            <span class="sidebar-fallback-emoji" style="display:none">🧑</span>
+          </span>
+          <span class="sidebar-item-content">
+            <span class="sidebar-item-title">Visitor Pass &amp; Face Recognition</span>
+            <span class="sidebar-item-status" id="sidebarStatus1">
+              <span class="sidebar-badge ok">✓ VERIFIED</span>
+            </span>
+          </span>
+          <span class="sidebar-item-indicator" aria-hidden="true">
+            <svg class="ind-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 5l7 7-7 7" />
+            </svg>
+            <svg class="ind-pin" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M16 9V4h1a1 1 0 0 0 0-2H7a1 1 0 0 0 0 2h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3z" />
+            </svg>
+          </span>
+        </button>
+
+        <div class="sidebar-connector" id="sidebarConn1"></div>
+
+        <!-- Sidebar Item 2: Vehicle Pass -->
+        <button type="button" class="sidebar-item" id="sidebarItem2" aria-controls="cardVehicle" aria-expanded="false">
+          <span class="sidebar-item-icon" aria-hidden="true">
+            <img src="Weighbridge-ANPR-1.png" class="sidebar-thumb" alt=""
+              onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='inline';" />
+            <span class="sidebar-fallback-emoji" style="display:none">🚗</span>
+          </span>
+          <span class="sidebar-item-content">
+            <span class="sidebar-item-title">Vehicle Pass &amp; ANPR Validation</span>
+            <span class="sidebar-item-status" id="sidebarStatus2">
+              <span class="sidebar-badge ok">✓ VERIFIED</span>
+            </span>
+          </span>
+          <span class="sidebar-item-indicator" aria-hidden="true">
+            <svg class="ind-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 5l7 7-7 7" />
+            </svg>
+            <svg class="ind-pin" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M16 9V4h1a1 1 0 0 0 0-2H7a1 1 0 0 0 0 2h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3z" />
+            </svg>
+          </span>
+        </button>
+
+        <div class="sidebar-connector" id="sidebarConn2"></div>
+
+        <!-- Sidebar Item 3: Cargo & Container -->
+        <button type="button" class="sidebar-item" id="sidebarItem3" aria-controls="cardCargo" aria-expanded="false">
+          <span class="sidebar-item-icon" aria-hidden="true">
+            <img src="container_number_recognition_example.jpg" class="sidebar-thumb" alt=""
+              onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='inline';" />
+            <span class="sidebar-fallback-emoji" style="display:none">📦</span>
+          </span>
+          <span class="sidebar-item-content">
+            <span class="sidebar-item-title">Cargo &amp; Container Scan Status</span>
+            <span class="sidebar-item-status" id="sidebarStatus3">
+              <span class="sidebar-badge ok">✓ ALL CLEAR</span>
+            </span>
+          </span>
+          <span class="sidebar-item-indicator" aria-hidden="true">
+            <svg class="ind-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 5l7 7-7 7" />
+            </svg>
+            <svg class="ind-pin" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M16 9V4h1a1 1 0 0 0 0-2H7a1 1 0 0 0 0 2h1v5c0 1.66-1.34 3-3 3v2h5.97v7l1 1 1-1v-7H19v-2c-1.66 0-3-1.34-3-3z" />
+            </svg>
+          </span>
+        </button>
+      </div>
+
+      <!-- Summary bar -->
+      <div class="sidebar-summary" id="sidebarSummary">
+        <div class="summary-icon" id="summaryIcon">✓</div>
+        <div class="summary-text" id="summaryText">ALL CHECKS CLEARED</div>
+      </div>
+    </aside>
+
+    <!-- PAGE CONTENT -->
+    <div class="page" id="main-content">
+      <!-- PANEL STAGE — blank until a sidebar check is hovered, tapped or pinned -->
+      <div class="panels" id="panelStage" data-active="none">
+        <!-- BLANK STATE -->
+        <div class="panel-empty" id="panelEmpty">
+          <div class="panel-empty-icon" aria-hidden="true">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+            </svg>
+          </div>
+          <p class="panel-empty-title">
+            <span class="copy-hover">Hover a verification check to view its details</span>
+            <span class="copy-touch">Tap a verification check to view its details</span>
+          </p>
+          <p class="panel-empty-hint">
+            <span class="copy-hover">Click a check to keep its panel open</span>
+            <span class="copy-touch">Tap the check again to close its panel</span>
+          </p>
+        </div>
+
+        <!-- PANEL 1: VISITOR / FRS -->
+        <div class="card" id="cardVisitor">
+          <div class="card-header blue">
+            <h2 class="card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z" />
+              </svg>
+              Visitor Pass &amp; Face Recognition
+            </h2>
+            <span style="
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 0.8px;
+                text-transform: uppercase;
+                color: rgba(255, 255, 255, 0.75);
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                border-radius: 4px;
+                padding: 2px 8px;
+                white-space: nowrap;
+              ">REF: 14785058</span>
+          </div>
+          <div class="card-body">
+            <div class="face-compare">
+              <div class="face-slot live">
+                <div class="face-slot-label">Captured Face (Live)</div>
+                <div class="face-img">
+                  <img src="visistor-feed.png" alt="Captured live CCTV face capture of visitor" width="400" height="300"
+                    fetchpriority="high"
+                    onerror="if(!this.dataset.err){this.dataset.err='1';this.src='Tablet View/visistor-feed.png';}" />
+                  <!-- Live camera grain noise overlay -->
+                  <div class="live-noise-overlay" aria-hidden="true"></div>
+                  <!-- REC indicator top-left -->
+                  <div class="live-rec" aria-hidden="true">
+                    <div class="live-rec-dot"></div>
+                    <span class="live-rec-text">REC</span>
+                  </div>
+                  <div class="cam-tag" id="faceCamTag" aria-hidden="true">
+                    FRS · CAM-01
+                  </div>
+                  <div class="cam-time" id="st1" aria-hidden="true">
+                    --:--:--
+                  </div>
+                </div>
+              </div>
+              <div class="face-slot registered">
+                <div class="face-slot-label">Registered Face</div>
+                <div class="face-img">
+                  <img src="visistor-feed-removebg-preview.png" alt="Registered face from database on file" width="400"
+                    height="300" fetchpriority="high"
+                    onerror="if(!this.dataset.err1){this.dataset.err1='1';this.src='Tablet View/visistor-feed-removebg-preview.png';}else if(!this.dataset.err2){this.dataset.err2='1';this.src='visistor-feed.png';}else{this.src='Tablet View/visistor-feed.png';}" />
+                  <div class="cam-tag" aria-hidden="true">RF</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="data-row">
+              <span class="dr-label">FULL NAME</span>
+              <span class="dr-value">THIRUMURUGAN</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">ID PROOF</span>
+              <span class="dr-value" style="
+                  font-family: &quot;Courier New&quot;, monospace;
+                  letter-spacing: 0.5px;
+                ">DRIVING LICENCE :823969187556</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">COMPANY</span>
+              <span class="dr-value">SUBHIKSHA LOGISTICS</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">PURPOSE</span>
+              <span class="dr-value">NEW PROJECTS</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">VEHICLE</span>
+              <span class="dr-value">TWO WHEELER</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">PASS TYPE</span>
+              <span class="dr-value" style="font-size: 14px; font-weight: 800; color: #00227a">
+                VENDOR PASS :
+                <span style="
+                    font-family: &quot;Courier New&quot;, monospace;
+                    font-size: 14px;
+                    font-weight: 900;
+                    color: #001845;
+                  ">2008261051 | 14645240</span>
+              </span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">VALID FROM - TILL</span>
+              <span class="dr-value" style="
+                  white-space: nowrap;
+                  font-size: 13px;
+                  font-weight: 800;
+                  color: #00227a;
+                ">20-AUG-2026 15:49 - 27-AUG-2026 05:59</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">PASS STATUS</span>
+              <span class="dr-value">
+                <span class="card-status-pill" id="cardStatus1">✓ APPROVED</span>
+              </span>
+            </div>
+
+            <!-- VISITOR PASS VERIFIED BADGE (Clickable to toggle) -->
+            <button type="button" id="vsStrip1" onclick="toggleCard(1)" title="Click to toggle Visitor Verification"
+              style="
+                cursor: pointer;
+                margin-top: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: linear-gradient(135deg, #0a3d1f, #166534);
+                border: 1.5px solid #22c55e;
+                border-radius: 8px;
+                padding: 6px 12px;
+                flex-shrink: 0;
+                min-height: 44px;
+                box-sizing: border-box;
+                box-shadow: 0 0 14px rgba(34, 197, 94, 0.2);
+                transition:
+                  background 0.25s ease,
+                  border-color 0.25s ease,
+                  box-shadow 0.25s ease;
+                width: 100%;
+                text-align: left;
+                font-family: inherit;
+              ">
+              <div style="
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  min-width: 0;
+                  flex: 1;
+                ">
+                <div class="vs-icon-box" style="
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    background: rgba(34, 197, 94, 0.18);
+                    border: 2px solid #22c55e;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 15px;
+                    flex-shrink: 0;
+                  " aria-hidden="true">
+                  🧑
+                </div>
+                <div style="min-width: 0; flex: 1">
+                  <div style="
+                      font-size: 13px;
+                      font-weight: 900;
+                      color: #ffffff;
+                      font-family: &quot;Inter&quot;, Arial, sans-serif;
+                      white-space: nowrap;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                    " id="vsMain1" aria-live="polite">
+                    Visitor Pass &amp; Face Recognition
+                  </div>
+                </div>
+              </div>
+              <div class="vs-badge-box" id="vsBdg1" style="
+                  display: flex;
+                  align-items: center;
+                  gap: 6px;
+                  background: rgba(34, 197, 94, 0.3);
+                  border: 2px solid #4ade80;
+                  border-radius: 20px;
+                  padding: 4px 12px;
+                  flex-shrink: 0;
+                " aria-live="polite">
+                <div class="dot" style="
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background: #ffffff;
+                    box-shadow: 0 0 8px #ffffff;
+                    animation: blink 1.8s ease-in-out infinite;
+                  "></div>
+                <span style="
+                    font-size: 11.5px;
+                    font-weight: 900;
+                    color: #ffffff;
+                    letter-spacing: 0.8px;
+                    text-transform: uppercase;
+                    white-space: nowrap;
+                  ">✓ VERIFIED</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- PANEL 2: VEHICLE / ANPR -->
+        <div class="card" id="cardVehicle">
+          <div class="card-header orange">
+            <h2 class="card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5H6.5c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.04 3H5.81l1.04-3zM19 17H5v-5h14v5z" />
+              </svg>
+              Vehicle Pass &amp; ANPR Validation
+            </h2>
+            <span style="
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 0.8px;
+                text-transform: uppercase;
+                color: rgba(255, 255, 255, 0.75);
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                border-radius: 4px;
+                padding: 2px 8px;
+                white-space: nowrap;
+              ">REF: 14785007</span>
+          </div>
+          <div class="card-body">
+            <div class="cam-box">
+              <img src="Weighbridge-ANPR-1.png" alt="ANPR camera feed showing vehicle at weighbridge, Gate 0 Lane A"
+                width="640" height="360" fetchpriority="high"
+                onerror="if(!this.dataset.err){this.dataset.err='1';this.src='Tablet View/Weighbridge-ANPR-1.png';}" />
+              <div class="cam-tag" id="anprCamTag" aria-hidden="true">
+                ANPR · CAM-02 · GATE-0-A
+              </div>
+              <div class="cam-time" id="st2" aria-hidden="true">--:--:--</div>
+            </div>
+
+            <div class="data-row">
+              <label for="anprInput" class="dr-label">REGISTRATION NO.</label>
+              <input type="text" value="UP91AT4254" id="anprInput" class="plate-number" name="registration_no"
+                autocomplete="off" spellcheck="false" placeholder="e.g. UP91AT4254…" />
+            </div>
+
+            <div class="data-row">
+              <span class="dr-label">BLACKLIST CHECK</span>
+              <span class="dr-value">
+                <span class="badge-ok" id="badgeBlacklist2">✓ Clear</span>
+              </span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">COMPANY</span>
+              <span class="dr-value">SUBHIKSHA LOGISTICS</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">PURPOSE</span>
+              <span class="dr-value">LOADING</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">PASS TYPE</span>
+              <span class="dr-value" style="font-size: 14px; font-weight: 800; color: #00227a">
+                DAILY :
+                <span style="
+                    font-family: &quot;Courier New&quot;, monospace;
+                    font-size: 14px;
+                    font-weight: 900;
+                    color: #001845;
+                  ">2108260212 | 14648095</span>
+              </span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">VALID FROM - TILL</span>
+              <span class="dr-value" style="
+                  white-space: nowrap;
+                  font-size: 13px;
+                  font-weight: 800;
+                  color: #00227a;
+                ">21-AUG-2026 08:25 - 22-AUG-2026 05:59</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">PASS STATUS</span>
+              <span class="dr-value">
+                <span class="card-status-pill" id="cardStatus2">✓ APPROVED</span>
+              </span>
+            </div>
+
+            <!-- VEHICLE PASS VERIFIED BADGE (Clickable to toggle) -->
+            <button type="button" id="vsStrip2" onclick="toggleCard(2)" title="Click to toggle Vehicle Verification"
+              style="
+                cursor: pointer;
+                margin-top: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: linear-gradient(135deg, #0a3d1f, #166534);
+                border: 1.5px solid #22c55e;
+                border-radius: 8px;
+                padding: 6px 12px;
+                flex-shrink: 0;
+                min-height: 44px;
+                box-sizing: border-box;
+                box-shadow: 0 0 14px rgba(34, 197, 94, 0.2);
+                transition:
+                  background 0.25s ease,
+                  border-color 0.25s ease,
+                  box-shadow 0.25s ease;
+                width: 100%;
+                text-align: left;
+                font-family: inherit;
+              ">
+              <div style="
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  min-width: 0;
+                  flex: 1;
+                ">
+                <div class="vs-icon-box" style="
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    background: rgba(34, 197, 94, 0.18);
+                    border: 2px solid #22c55e;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 15px;
+                    flex-shrink: 0;
+                  " aria-hidden="true">
+                  🚗
+                </div>
+                <div style="min-width: 0; flex: 1">
+                  <div style="
+                      font-size: 13px;
+                      font-weight: 900;
+                      color: #ffffff;
+                      font-family: &quot;Inter&quot;, Arial, sans-serif;
+                      white-space: nowrap;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                    " id="vsMain2" aria-live="polite">
+                    Vehicle Pass &amp; ANPR Validation
+                  </div>
+                </div>
+              </div>
+              <div class="vs-badge-box" id="vsBdg2" style="
+                  display: flex;
+                  align-items: center;
+                  gap: 6px;
+                  background: rgba(34, 197, 94, 0.3);
+                  border: 2px solid #4ade80;
+                  border-radius: 20px;
+                  padding: 4px 12px;
+                  flex-shrink: 0;
+                " aria-live="polite">
+                <div class="dot" style="
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background: #ffffff;
+                    box-shadow: 0 0 8px #ffffff;
+                    animation: blink 1.8s ease-in-out infinite;
+                  "></div>
+                <span style="
+                    font-size: 11.5px;
+                    font-weight: 900;
+                    color: #ffffff;
+                    letter-spacing: 0.8px;
+                    text-transform: uppercase;
+                    white-space: nowrap;
+                  ">✓ VERIFIED</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- PANEL 3: CARGO / CONTAINER -->
+        <div class="card" id="cardCargo">
+          <div class="card-header teal">
+            <h2 class="card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M4 20h16a2 2 0 002-2V8a2 2 0 00-2-2h-3V4H7v2H4a2 2 0 00-2 2v10a2 2 0 002 2zM9 6h6v2H9V6zm11 12H4V10h16v8z" />
+              </svg>
+              Cargo &amp; Container Scan Status
+            </h2>
+            <span style="
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 0.8px;
+                text-transform: uppercase;
+                color: rgba(255, 255, 255, 0.75);
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.25);
+                border-radius: 4px;
+                padding: 2px 8px;
+                white-space: nowrap;
+              ">REF: 14784965</span>
+          </div>
+          <div class="card-body">
+            <div class="cam-box">
+              <img src="container_number_recognition_example.jpg"
+                alt="AI camera feed showing container number recognition scan at Gate 0" width="640" height="360"
+                fetchpriority="high"
+                onerror="if(!this.dataset.err){this.dataset.err='1';this.src='Tablet View/container_number_recognition_example.jpg';}" />
+              <div class="cam-tag" id="cargoCamTag" aria-hidden="true">
+                AI-CAM · Container · GATE-0-A
+              </div>
+              <div class="cam-time" id="st3" aria-hidden="true">--:--:--</div>
+            </div>
+
+            <!-- CONTAINER 1 -->
+            <div class="data-row" style="padding: 4px 0; align-items: center">
+              <label for="cnBox1" class="dr-label" style="font-size: 13px; min-width: 96px">CONTAINER 1</label>
+              <div style="
+                  display: flex;
+                  align-items: center;
+                  gap: 5px;
+                  flex: 1;
+                  min-width: 0;
+                ">
+                <!-- Box 1: E / I toggle -->
+                <button id="cnEI1" type="button" onclick="toggleEI(1)"
+                  aria-label="Container 1: Export — Click to toggle Export / Import"
+                  title="Click to toggle Export / Import" style="
+                    flex: 0 0 auto;
+                    min-width: 34px;
+                    height: 30px;
+                    border: 2px solid #001e6e;
+                    border-radius: 4px;
+                    background: #001e6e;
+                    color: #fff;
+                    cursor: pointer;
+                    padding: 1px 4px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0px;
+                    transition:
+                      background 0.2s,
+                      border-color 0.2s;
+                  ">
+                  <span id="cnEI_letter1" aria-hidden="true" style="
+                      font-family: &quot;Inter&quot;, Arial, sans-serif;
+                      font-size: 13px;
+                      font-weight: 800;
+                      line-height: 1;
+                    ">E</span>
+                  <span id="cnEI_label1" aria-hidden="true" style="
+                      font-size: 7px;
+                      font-weight: 800;
+                      letter-spacing: 0.5px;
+                      text-transform: uppercase;
+                      line-height: 1;
+                      color: #ffffff;
+                    ">EXP</span>
+                </button>
+                <!-- Size box (20/40) -->
+                <input type="text" maxlength="2" value="20" id="cnSize1" name="cnSize1" autocomplete="off"
+                  inputmode="numeric" pattern="[0-9]*" style="
+                    width: 32px;
+                    height: 30px;
+                    font-family: &quot;Inter&quot;, Arial, sans-serif;
+                    font-size: 14.5px;
+                    font-weight: 900;
+                    letter-spacing: 0px;
+                    border: 2px solid #001e6e;
+                    border-radius: 4px;
+                    padding: 0;
+                    text-align: center;
+                    background: #e0ecff;
+                    color: #001e6e;
+                    flex-shrink: 0;
+                  " title="Size (20/40 ft)" placeholder="20…" aria-label="Container 1 Size" />
+                <!-- Single Text Box for Container 1 -->
+                <input type="text" value="TCKU 123456-7" id="cnBox1" name="cnBox1" autocomplete="off" spellcheck="false"
+                  style="
+                    flex: 1;
+                    min-width: 0;
+                    height: 30px;
+                    font-family: &quot;Courier New&quot;, monospace;
+                    font-size: 14.5px;
+                    font-weight: 900;
+                    letter-spacing: 1px;
+                    background: #fff;
+                    color: #001e6e;
+                    border: 2px solid #001e6e;
+                    border-radius: 4px;
+                    padding: 2px 8px;
+                    text-transform: uppercase;
+                    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+                  " placeholder="e.g. TCKU 123456-7…" />
+              </div>
+            </div>
+
+            <!-- CONTAINER 2 -->
+            <div class="data-row" style="padding: 4px 0; align-items: center">
+              <label for="cnBox2" class="dr-label" style="font-size: 13px; min-width: 96px">CONTAINER 2</label>
+              <div style="
+                  display: flex;
+                  align-items: center;
+                  gap: 5px;
+                  flex: 1;
+                  min-width: 0;
+                ">
+                <!-- Box 2: E / I toggle -->
+                <button id="cnEI2" type="button" onclick="toggleEI(2)"
+                  aria-label="Container 2: Export — Click to toggle Export / Import"
+                  title="Click to toggle Export / Import" style="
+                    flex: 0 0 auto;
+                    min-width: 34px;
+                    height: 30px;
+                    border: 2px solid #001e6e;
+                    border-radius: 4px;
+                    background: #001e6e;
+                    color: #fff;
+                    cursor: pointer;
+                    padding: 1px 4px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0px;
+                    transition:
+                      background 0.2s,
+                      border-color 0.2s;
+                  ">
+                  <span id="cnEI_letter2" aria-hidden="true" style="
+                      font-family: &quot;Inter&quot;, Arial, sans-serif;
+                      font-size: 13px;
+                      font-weight: 800;
+                      line-height: 1;
+                    ">E</span>
+                  <span id="cnEI_label2" aria-hidden="true" style="
+                      font-size: 7px;
+                      font-weight: 800;
+                      letter-spacing: 0.5px;
+                      text-transform: uppercase;
+                      line-height: 1;
+                      color: #ffffff;
+                    ">EXP</span>
+                </button>
+                <!-- Size box (20/40) -->
+                <input type="text" maxlength="2" value="20" id="cnSize2" name="cnSize2" autocomplete="off"
+                  inputmode="numeric" pattern="[0-9]*" style="
+                    width: 32px;
+                    height: 30px;
+                    font-family: &quot;Inter&quot;, Arial, sans-serif;
+                    font-size: 14.5px;
+                    font-weight: 900;
+                    letter-spacing: 0px;
+                    border: 2px solid #001e6e;
+                    border-radius: 4px;
+                    padding: 0;
+                    text-align: center;
+                    background: #e0ecff;
+                    color: #001e6e;
+                    flex-shrink: 0;
+                  " title="Size (20/40 ft)" placeholder="20…" aria-label="Container 2 Size" />
+                <!-- Single Text Box for Container 2 -->
+                <input type="text" value="MEDU 987654-2" id="cnBox2" name="cnBox2" autocomplete="off" spellcheck="false"
+                  style="
+                    flex: 1;
+                    min-width: 0;
+                    height: 30px;
+                    font-family: &quot;Courier New&quot;, monospace;
+                    font-size: 14.5px;
+                    font-weight: 900;
+                    letter-spacing: 1px;
+                    background: #fff;
+                    color: #001e6e;
+                    border: 2px solid #001e6e;
+                    border-radius: 4px;
+                    padding: 2px 8px;
+                    text-transform: uppercase;
+                    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+                  " placeholder="e.g. MEDU 987654-2…" />
+              </div>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">Form 13 No.</span>
+              <span class="dr-value" style="
+                  font-family: &quot;Courier New&quot;, monospace;
+                  font-size: 14.5px;
+                  font-weight: 900;
+                ">F13-2025-0091</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">Form 13 Match</span>
+              <span class="badge-ok" id="badgeF13">✓ Matched</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">Terminal</span>
+              <span class="dr-value">CCTL</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">RapiScan (Cargo X-Ray)</span>
+              <span class="badge-ok" id="badgeRapi">✓ Clear</span>
+            </div>
+            <div class="data-row">
+              <span class="dr-label">OOC Status</span>
+              <span class="badge-ok" id="badgeOOC">✓ Completed</span>
+            </div>
+            <!-- CARGO PASS VERIFIED BADGE (Clickable to toggle) -->
+            <button type="button" id="vsStrip3" onclick="toggleCard(3)" title="Click to toggle Cargo Verification"
+              style="
+                cursor: pointer;
+                margin-top: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: linear-gradient(135deg, #0a3d1f, #166534);
+                border: 1.5px solid #22c55e;
+                border-radius: 8px;
+                padding: 6px 12px;
+                flex-shrink: 0;
+                min-height: 44px;
+                box-sizing: border-box;
+                box-shadow: 0 0 18px rgba(34, 197, 94, 0.28);
+                transition:
+                  background 0.25s ease,
+                  border-color 0.25s ease,
+                  box-shadow 0.25s ease;
+                width: 100%;
+                text-align: left;
+                font-family: inherit;
+              ">
+              <div style="
+                  display: flex;
+                  align-items: center;
+                  gap: 8px;
+                  min-width: 0;
+                  flex: 1;
+                ">
+                <div class="vs-icon-box" style="
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 50%;
+                    background: rgba(34, 197, 94, 0.18);
+                    border: 2px solid #22c55e;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 15px;
+                    flex-shrink: 0;
+                  " aria-hidden="true">
+                  📦
+                </div>
+                <div style="min-width: 0; flex: 1">
+                  <div style="
+                      font-size: 13px;
+                      font-weight: 900;
+                      color: #ffffff;
+                      font-family: &quot;Inter&quot;, Arial, sans-serif;
+                      white-space: nowrap;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                    " id="vsMain3" aria-live="polite">
+                    ✓ Cargo Identified
+                  </div>
+                </div>
+              </div>
+              <div class="vs-badge-box" id="vsBdg3" style="
+                  display: flex;
+                  align-items: center;
+                  gap: 6px;
+                  background: rgba(34, 197, 94, 0.3);
+                  border: 2px solid #4ade80;
+                  border-radius: 20px;
+                  padding: 4px 12px;
+                  flex-shrink: 0;
+                " aria-live="polite">
+                <div class="dot" style="
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    background: #ffffff;
+                    box-shadow: 0 0 8px #ffffff;
+                    animation: blink 1.8s ease-in-out infinite;
+                  "></div>
+                <span style="
+                    font-size: 11.5px;
+                    font-weight: 900;
+                    color: #ffffff;
+                    letter-spacing: 0.8px;
+                    text-transform: uppercase;
+                    white-space: nowrap;
+                  ">ALL CLEAR</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- /panels -->
+    </div>
+    <!-- /page -->
+  </div>
+  <!-- /main-wrapper -->
+
+  <!-- ACCESS GRANTED FULL-SCREEN OVERLAY -->
+  <div class="access-overlay" id="accessOverlay" role="dialog" aria-modal="true" aria-labelledby="agTitle"
+    aria-describedby="agSub">
+    <div class="ag-ring" aria-hidden="true">
+      <span class="ag-check">&#x2713;</span>
+    </div>
+    <div class="ag-title" id="agTitle">ACCESS GRANTED</div>
+    <div class="ag-sub" id="agSub">All Checks Cleared &mdash; Gate Open</div>
+    <button class="ag-btn" id="agDismissBtn" onclick="dismissAccess()">
+      Dismiss / Close Gate
+    </button>
+  </div>
+
+  <!-- STICKY MOBILE ACTION BAR (hidden on desktop via CSS) -->
+  <div class="mobile-action-bar" id="mobileActionBar">
+    <button class="approved-btn" id="mobileGateBtn" onclick="triggerAccessApproval()"
+      title="All checks cleared — Grant access and open gate" style="width: 100%">
+      <span class="appr-check">&#x2713;</span>
+      <span>ALL CHECKS CLEARED &bull; APPROVED</span>
+    </button>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="goi-footer">
+    <span>Government of India</span> &nbsp;|&nbsp; Ministry of Ports, Shipping
+    &amp; Waterways &nbsp;|&nbsp; Chennai Port Authority &nbsp;|&nbsp; CISF
+    Gate Management System &nbsp;|&nbsp; <span>NIC Powered</span>
+  </div>
+
+  <script>
+    // ── FOCUS TRAP for Access Overlay (dialog) ──
+    var _prevFocusEl = null;
+
+    function trapFocus(el) {
+      var focusable = el.querySelectorAll(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      el.addEventListener("keydown", function handleTrap(e) {
+        if (e.key !== "Tab") {
+          if (e.key === "Escape") {
+            dismissAccess();
+            return;
+          }
+          return;
+        }
+        if (e.shiftKey) {
+          if (document.activeElement === first) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (document.activeElement === last) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
+      });
+      if (first) first.focus();
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const hh = String(now.getHours()).padStart(2, "0");
+      const mm = String(now.getMinutes()).padStart(2, "0");
+      const ss = String(now.getSeconds()).padStart(2, "0");
+      const timeStr = hh + ":" + mm + ":" + ss;
+
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      const dateStr =
+        now.getDate() +
+        " " +
+        months[now.getMonth()] +
+        " " +
+        now.getFullYear();
+
+      document.getElementById("clock").textContent = timeStr;
+      document.getElementById("date").textContent = dateStr;
+
+      ["st1", "st2", "st3"].forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) el.textContent = timeStr;
+      });
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // ── SCENARIO STATE MANAGEMENT & SIMULATION ──
+    var cardState = {
+      visitor: true,
+      vehicle: true,
+      cargo: true,
+    };
+
+    // "visitor" = person with only a visitor pass (registered face + data);
+    // "full" = visitor + vehicle + cargo checks
+    var passMode = "visitor";
+
+    function checksClear() {
+      if (passMode === "visitor") return cardState.visitor;
+      return cardState.visitor && cardState.vehicle && cardState.cargo;
+    }
+
+    function applyPassMode() {
+      document.body.setAttribute("data-pass", passMode);
+      var val = document.getElementById("passModeValue");
+      if (val) {
+        val.textContent =
+          passMode === "visitor" ? "VISITOR ONLY" : "VISITOR + VEHICLE + CARGO";
+      }
+    }
+
+    function togglePassMode() {
+      passMode = passMode === "visitor" ? "full" : "visitor";
+      previewPanel = null;
+      pinnedPanel = null;
+      applyPassMode();
+      applyCardStates();
+      renderPanels();
+    }
+
+    function toggleCard(num) {
+      if (num === 1) cardState.visitor = !cardState.visitor;
+      if (num === 2) cardState.vehicle = !cardState.vehicle;
+      if (num === 3) cardState.cargo = !cardState.cargo;
+      applyCardStates();
+    }
+
+    function applyCardStates() {
+      var isEntry =
+        (document.getElementById("eeMain")
+          ? document.getElementById("eeMain").textContent.trim()
+          : "ENTRY") === "ENTRY";
+      var suffix = isEntry ? "IN" : "OUT";
+
+      // Card 1: Visitor
+      var c1 = document.getElementById("cardVisitor");
+      var cs1 = document.getElementById("cardStatus1");
+      var st1 = document.getElementById("vsStrip1");
+      var bdg1 = document.getElementById("vsBdg1");
+      var ftag = document.getElementById("faceCamTag");
+
+      if (cardState.visitor) {
+        if (c1) c1.classList.remove("denied");
+        if (cs1) {
+          cs1.className = "card-status-pill";
+          cs1.innerHTML = "&#x2713; APPROVED";
+        }
+        var bBl1 = document.getElementById("badgeBlacklist1");
+        if (bBl1) {
+          bBl1.className = "badge-ok";
+          bBl1.innerHTML = "&#x2713; Clear";
+        }
+        if (st1) {
+          st1.style.background = "linear-gradient(135deg,#0a3d1f,#166534)";
+          st1.style.borderColor = "#22c55e";
+        }
+        if (bdg1)
+          bdg1.innerHTML =
+            '<div class="dot" style="width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;animation:blink 1.8s ease-in-out infinite;"></div><span style="font-size:10.5px;font-weight:800;color:#4ade80;letter-spacing:0.8px;text-transform:uppercase;white-space:nowrap;">&#x2713; VERIFIED</span>';
+        if (ftag) ftag.textContent = "FRS · CAM-01";
+      } else {
+        if (c1) c1.classList.add("denied");
+        if (cs1) {
+          cs1.className = "card-status-pill denied";
+          cs1.innerHTML = "&#x2715; REJECTED";
+        }
+        var bBl1 = document.getElementById("badgeBlacklist1");
+        if (bBl1) {
+          bBl1.className = "badge-fail";
+          bBl1.innerHTML = "&#x2715; Blacklisted";
+        }
+        if (st1) {
+          st1.style.background = "linear-gradient(135deg,#500707,#881337)";
+          st1.style.borderColor = "#ef4444";
+        }
+        if (bdg1)
+          bdg1.innerHTML =
+            '<div class="dot" style="width:7px;height:7px;border-radius:50%;background:#ef4444;box-shadow:0 0 6px #ef4444;animation:blink 1.8s ease-in-out infinite;"></div><span style="font-size:10.5px;font-weight:800;color:#fca5a5;letter-spacing:0.8px;text-transform:uppercase;white-space:nowrap;">&#x2715; DENIED</span>';
+        if (ftag) ftag.textContent = "FRS · CAM-01 · ✕ MISMATCH";
+      }
+
+      // Card 2: Vehicle
+      var c2 = document.getElementById("cardVehicle");
+      var cs2 = document.getElementById("cardStatus2");
+      var st2 = document.getElementById("vsStrip2");
+      var bdg2 = document.getElementById("vsBdg2");
+      var vtag = document.getElementById("anprCamTag");
+
+      if (cardState.vehicle) {
+        if (c2) c2.classList.remove("denied");
+        if (cs2) {
+          cs2.className = "card-status-pill";
+          cs2.innerHTML = "&#x2713; APPROVED";
+        }
+        var bBl2 = document.getElementById("badgeBlacklist2");
+        if (bBl2) {
+          bBl2.className = "badge-ok";
+          bBl2.innerHTML = "&#x2713; Clear";
+        }
+        if (st2) {
+          st2.style.background = "linear-gradient(135deg,#0a3d1f,#166534)";
+          st2.style.borderColor = "#22c55e";
+        }
+        if (bdg2)
+          bdg2.innerHTML =
+            '<div class="dot" style="width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;animation:blink 1.8s ease-in-out infinite;"></div><span style="font-size:10.5px;font-weight:800;color:#4ade80;letter-spacing:0.8px;text-transform:uppercase;white-space:nowrap;">&#x2713; VERIFIED</span>';
+        if (vtag) vtag.textContent = "ANPR · CAM-02 · GATE-0-A";
+      } else {
+        if (c2) c2.classList.add("denied");
+        if (cs2) {
+          cs2.className = "card-status-pill denied";
+          cs2.innerHTML = "&#x2715; REJECTED";
+        }
+        var bBl2 = document.getElementById("badgeBlacklist2");
+        if (bBl2) {
+          bBl2.className = "badge-fail";
+          bBl2.innerHTML = "&#x2715; Blacklisted";
+        }
+        if (st2) {
+          st2.style.background = "linear-gradient(135deg,#500707,#881337)";
+          st2.style.borderColor = "#ef4444";
+        }
+        if (bdg2)
+          bdg2.innerHTML =
+            '<div class="dot" style="width:7px;height:7px;border-radius:50%;background:#ef4444;box-shadow:0 0 6px #ef4444;animation:blink 1.8s ease-in-out infinite;"></div><span style="font-size:10.5px;font-weight:800;color:#fca5a5;letter-spacing:0.8px;text-transform:uppercase;white-space:nowrap;">&#x2715; NOT APPROVED</span>';
+        if (vtag) vtag.textContent = "ANPR · CAM-02 · ⚠ FLAGGED";
+      }
+
+      // Card 3: Cargo
+      var c3 = document.getElementById("cardCargo");
+      var bF13 = document.getElementById("badgeF13");
+      var bRapi = document.getElementById("badgeRapi");
+      var bOOC = document.getElementById("badgeOOC");
+      var st3 = document.getElementById("vsStrip3");
+      var main3 = document.getElementById("vsMain3");
+      var bdg3 = document.getElementById("vsBdg3");
+
+      if (cardState.cargo) {
+        if (c3) c3.classList.remove("denied");
+        if (bF13) {
+          bF13.className = "badge-ok";
+          bF13.textContent = "✓ Matched";
+        }
+        if (bRapi) {
+          bRapi.className = "badge-ok";
+          bRapi.textContent = "✓ Clear";
+        }
+        if (bOOC) {
+          bOOC.className = "badge-ok";
+          bOOC.textContent = "✓ Completed";
+        }
+        if (st3) {
+          st3.style.background = "linear-gradient(135deg,#0a3d1f,#166534)";
+          st3.style.borderColor = "#22c55e";
+        }
+        if (main3) main3.innerHTML = "&#x2713;&nbsp;Cargo Identified";
+        if (bdg3)
+          bdg3.innerHTML =
+            '<div class="dot" style="width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 6px #22c55e;animation:blink 1.8s ease-in-out infinite;"></div><span style="font-size:10px;font-weight:800;color:#4ade80;letter-spacing:0.8px;text-transform:uppercase;">ALL CLEAR</span>';
+      } else {
+        if (c3) c3.classList.add("denied");
+        if (bF13) {
+          bF13.className = "badge-fail";
+          bF13.textContent = "✕ Mismatch";
+        }
+        if (bRapi) {
+          bRapi.className = "badge-warn";
+          bRapi.textContent = "⚠ Anomaly Detected";
+        }
+        if (bOOC) {
+          bOOC.className = "badge-fail";
+          bOOC.textContent = "✕ Not Allowed";
+        }
+        if (st3) {
+          st3.style.background = "linear-gradient(135deg,#500707,#881337)";
+          st3.style.borderColor = "#ef4444";
+        }
+        if (main3)
+          main3.innerHTML = "&#x2715;&nbsp;Customs Inspection Required";
+        if (bdg3)
+          bdg3.innerHTML =
+            '<div class="dot" style="width:8px;height:8px;border-radius:50%;background:#ef4444;box-shadow:0 0 6px #ef4444;animation:blink 1.8s ease-in-out infinite;"></div><span style="font-size:10px;font-weight:800;color:#fca5a5;letter-spacing:0.8px;text-transform:uppercase;">&#x2715; DETAINED</span>';
+      }
+
+      // Master Button & Overlay Update
+      var allClear = checksClear();
+      var apprBtn = document.getElementById("approvedGateBtn");
+      var mobBtn = document.getElementById("mobileGateBtn");
+      var overlay = document.getElementById("accessOverlay");
+
+      if (allClear) {
+        if (apprBtn) {
+          apprBtn.className = "approved-btn";
+          apprBtn.innerHTML =
+            '<span class="appr-check">&#x2713;</span><span>ALL CHECKS CLEARED &bull; APPROVED</span>';
+          apprBtn.title = "All checks cleared — Click to grant access";
+        }
+        if (mobBtn) {
+          mobBtn.className = "approved-btn";
+          mobBtn.innerHTML =
+            '<span class="appr-check">&#x2713;</span><span>ALL CHECKS CLEARED &bull; APPROVED</span>';
+        }
+        if (overlay) {
+          overlay.className = "access-overlay";
+          overlay.querySelector(".ag-ring").innerHTML =
+            '<span class="ag-check">&#x2713;</span>';
+          overlay.querySelector(".ag-title").textContent = "ACCESS GRANTED";
+          overlay.querySelector(".ag-sub").textContent =
+            "All Checks Cleared \u2014 Boom Barrier Lifted";
+          overlay.querySelector(".ag-btn").textContent =
+            "Dismiss / Close Gate";
+        }
+      } else {
+        var fails = [];
+        var visitorOnly = passMode === "visitor";
+        if (!cardState.visitor)
+          fails.push(visitorOnly ? "Visitor Pass Rejected" : "Visitor Face Mismatch");
+        if (!visitorOnly && !cardState.vehicle) fails.push("REJECTED");
+        if (!visitorOnly && !cardState.cargo) fails.push("Cargo Customs Detention");
+
+        if (apprBtn) {
+          apprBtn.className = "approved-btn denied";
+          apprBtn.innerHTML =
+            '<span class="appr-check">&#x2715;</span><span>ACCESS DENIED &bull; GATE LOCKED</span>';
+          apprBtn.title = "Security Alert — " + fails.join(" | ");
+        }
+        if (mobBtn) {
+          mobBtn.className = "approved-btn denied";
+          mobBtn.innerHTML =
+            '<span class="appr-check">&#x2715;</span><span>ACCESS DENIED &bull; GATE LOCKED</span>';
+        }
+        if (overlay) {
+          overlay.className = "access-overlay denied";
+          overlay.querySelector(".ag-ring").innerHTML =
+            '<span class="ag-check">&#x2715;</span>';
+          overlay.querySelector(".ag-title").textContent =
+            "ACCESS DENIED \u2014 GATE LOCKED";
+          overlay.querySelector(".ag-sub").innerHTML =
+            "PORT ENTRY NOT APPROVED: " + fails.join(" &bull; ");
+          overlay.querySelector(".ag-btn").textContent =
+            "Acknowledge Security Alert";
+        }
+      }
+
+      // Update sidebar items to match current card states
+      updateAllSidebarItems();
+    }
+
+    // ENTRY / EXIT top badge toggle
+    function toggleEntryExit() {
+      var btn = document.getElementById("eeBtn");
+      var main = document.getElementById("eeMain");
+      var sub = document.getElementById("eeSub");
+      var arrow = document.getElementById("eeArrow");
+
+      if (main.textContent.trim() === "ENTRY") {
+        btn.classList.remove("entry");
+        btn.classList.add("exit");
+        main.textContent = "EXIT";
+        sub.textContent = "Out-Gate \u00b7 Click to switch";
+        arrow.innerHTML = "&#x2190;";
+      } else {
+        btn.classList.remove("exit");
+        btn.classList.add("entry");
+        main.textContent = "ENTRY";
+        sub.textContent = "In-Gate \u00b7 Click to switch";
+        arrow.innerHTML = "&#x2192;";
+      }
+      applyCardStates();
+    }
+
+    // E/I toggle — Export (navy) / Import (orange) for Container 1 & 2
+    function toggleEI(num) {
+      num = num || 1;
+      var btn =
+        document.getElementById("cnEI" + num) ||
+        document.getElementById("cnEI");
+      var letter =
+        document.getElementById("cnEI_letter" + num) ||
+        document.getElementById("cnEI_letter");
+      var lbl =
+        document.getElementById("cnEI_label" + num) ||
+        document.getElementById("cnEI_label");
+      if (!btn || !letter) return;
+      if (letter.textContent.trim() === "E") {
+        letter.textContent = "I";
+        if (lbl) lbl.textContent = "IMP";
+        btn.style.background = "#c05000";
+        btn.style.borderColor = "#9a3d00";
+        btn.setAttribute(
+          "aria-label",
+          "Container " + num + ": Import — Click to toggle Export / Import",
+        );
+      } else {
+        letter.textContent = "E";
+        if (lbl) lbl.textContent = "EXP";
+        btn.style.background = "#003580";
+        btn.style.borderColor = "#003580";
+        btn.setAttribute(
+          "aria-label",
+          "Container " + num + ": Export — Click to toggle Export / Import",
+        );
+      }
+    }
+
+    // ACCESS GRANTED TRIGGER
+    function triggerAccessApproval() {
+      var overlay = document.getElementById("accessOverlay");
+      if (overlay) {
+        _prevFocusEl = document.activeElement;
+        overlay.classList.add("show");
+        trapFocus(overlay);
+      }
+    }
+
+    function dismissAccess() {
+      var overlay = document.getElementById("accessOverlay");
+      if (overlay) {
+        overlay.classList.remove("show");
+        // Return focus to previously focused element
+        if (_prevFocusEl && typeof _prevFocusEl.focus === "function") {
+          _prevFocusEl.focus();
+          _prevFocusEl = null;
+        }
+      }
+    }
+    // ── SIDEBAR STATUS (items are always visible) ──
+    function updateSidebarItemStatus(num) {
+      var statusEl = document.getElementById("sidebarStatus" + num);
+      var item = document.getElementById("sidebarItem" + num);
+      if (!statusEl || !item) return;
+
+      var isOk = false;
+      if (num === 1) isOk = cardState.visitor;
+      if (num === 2) isOk = cardState.vehicle;
+      if (num === 3) isOk = cardState.cargo;
+
+      var okLabels = ["✓ VERIFIED", "✓ VERIFIED", "✓ ALL CLEAR"];
+      var failLabels = ["✕ DENIED", "✕ NOT APPROVED", "✕ DETAINED"];
+
+      if (isOk) {
+        statusEl.innerHTML =
+          '<span class="sidebar-badge ok">' + okLabels[num - 1] + "</span>";
+        item.classList.remove("glow-fail");
+        item.classList.add("glow-ok");
+      } else {
+        statusEl.innerHTML =
+          '<span class="sidebar-badge fail">' + failLabels[num - 1] + "</span>";
+        item.classList.remove("glow-ok");
+        item.classList.add("glow-fail");
+      }
+    }
+
+    function updateSidebarSummary() {
+      var summary = document.getElementById("sidebarSummary");
+      if (!summary) return;
+      var icon = document.getElementById("summaryIcon");
+      var text = document.getElementById("summaryText");
+
+      var allClear = checksClear();
+      if (allClear) {
+        summary.classList.remove("denied");
+        if (icon) icon.textContent = "✓";
+        if (text) text.textContent = "ALL CHECKS CLEARED";
+      } else {
+        summary.classList.add("denied");
+        if (icon) icon.textContent = "✕";
+        if (text) text.textContent = "ACCESS DENIED";
+      }
+    }
+
+    // Called from applyCardStates() whenever a card is toggled
+    function updateAllSidebarItems() {
+      for (var i = 1; i <= 3; i++) {
+        updateSidebarItemStatus(i);
+      }
+      // Each connector line takes the colour of the check above it
+      var conn1 = document.getElementById("sidebarConn1");
+      var conn2 = document.getElementById("sidebarConn2");
+      if (conn1) {
+        conn1.classList.remove("active", "active-fail");
+        conn1.classList.add(cardState.visitor ? "active" : "active-fail");
+      }
+      if (conn2) {
+        conn2.classList.remove("active", "active-fail");
+        conn2.classList.add(cardState.vehicle ? "active" : "active-fail");
+      }
+      updateSidebarSummary();
+    }
+
+    // ── HOVER-TO-REVEAL PANELS ──
+    // Hover a sidebar check to preview its panel; click / tap it to pin the
+    // panel open (click again or press Esc to release). One panel at a time.
+    var PANELS = [
+      { key: "visitor", itemId: "sidebarItem1", cardId: "cardVisitor" },
+      { key: "vehicle", itemId: "sidebarItem2", cardId: "cardVehicle" },
+      { key: "cargo", itemId: "sidebarItem3", cardId: "cardCargo" },
+    ];
+    var previewPanel = null; // shown while the pointer hovers a check
+    var pinnedPanel = null; // stays shown after hover ends
+    var hidePanelTimer = null;
+    var LEAVE_DELAY = 160; // ms before a hover preview clears
+
+    // Menu-aim: a diagonal move from one check towards the open panel can
+    // cross another check on the way. That must not switch the panel, or a
+    // click meant for one verification could land on another.
+    var hoveredItemKey = null; // check currently under the pointer
+    var pointerTrail = []; // last few pointer positions over the sidebar
+    var lastPointerMove = 0; // timestamp of the latest sidebar pointermove
+    var aimTimer = null;
+    var AIM_DELAY = 250;
+    var SETTLE_TIME = 100; // no movement for this long = pointer has settled
+
+    function findPanel(key) {
+      for (var i = 0; i < PANELS.length; i++) {
+        if (PANELS[i].key === key) return PANELS[i];
+      }
+      return null;
+    }
+
+    // A hover preview takes priority; otherwise fall back to the pinned panel.
+    // With a visitor-only pass, the Visitor panel is the only one and stays open.
+    function shownPanel() {
+      return (
+        previewPanel ||
+        pinnedPanel ||
+        (passMode === "visitor" ? "visitor" : null)
+      );
+    }
+
+    function renderPanels() {
+      var shown = shownPanel();
+      var stage = document.getElementById("panelStage");
+      if (stage) stage.setAttribute("data-active", shown || "none");
+
+      PANELS.forEach(function (p) {
+        var card = document.getElementById(p.cardId);
+        var item = document.getElementById(p.itemId);
+        var isShown = p.key === shown;
+        if (card) card.classList.toggle("is-active", isShown);
+        if (item) {
+          item.classList.toggle("is-active", isShown);
+          item.classList.toggle("is-pinned", p.key === pinnedPanel);
+          item.setAttribute("aria-expanded", isShown ? "true" : "false");
+        }
+      });
+    }
+
+    function cancelPanelHide() {
+      if (hidePanelTimer) {
+        clearTimeout(hidePanelTimer);
+        hidePanelTimer = null;
+      }
+    }
+
+    function schedulePanelHide(delay) {
+      cancelPanelHide();
+      hidePanelTimer = setTimeout(function () {
+        hidePanelTimer = null;
+        if (previewPanel) {
+          previewPanel = null;
+          renderPanels();
+        }
+      }, delay);
+    }
+
+    // Leaving the sidebar towards the panel gets a longer grace period, sized
+    // to the gap between them (the panel is centred, so the gap grows on
+    // wide screens). This lets the pointer reach the panel to use it.
+    function travelGrace() {
+      var sidebar = document.getElementById("detectionSidebar");
+      var p = findPanel(shownPanel());
+      var card = p && document.getElementById(p.cardId);
+      if (!sidebar || !card) return LEAVE_DELAY;
+      var gap =
+        card.getBoundingClientRect().left -
+        sidebar.getBoundingClientRect().right;
+      return Math.min(800, 250 + Math.max(0, gap) * 1.2);
+    }
+
+    function previewPanelFor(key) {
+      cancelPanelHide();
+      if (previewPanel !== key) {
+        previewPanel = key;
+        renderPanels();
+      }
+    }
+
+    // Is the pointer, now at (x, y), moving into the cone between its
+    // recent position and the left edge of the panel on screen?
+    function headingToShownPanel(x, y) {
+      var p = findPanel(shownPanel());
+      var card = p && document.getElementById(p.cardId);
+      var from = pointerTrail[0];
+      if (!card || !from) return false;
+      var dx = x - from.x;
+      if (dx <= 0) return false; // straight down/up = scanning the checks
+      var r = card.getBoundingClientRect();
+      if (from.x >= r.left) return false;
+      var slope = (y - from.y) / dx;
+      var slopeTop = (r.top - from.y) / (r.left - from.x);
+      var slopeBottom = (r.bottom - from.y) / (r.left - from.x);
+      return slope >= slopeTop && slope <= slopeBottom;
+    }
+
+    // Switch instantly when scanning; wait while the pointer is heading
+    // for the open panel, and switch once it settles on this check.
+    function requestPreview(key, x, y) {
+      clearTimeout(aimTimer);
+      var shown = shownPanel();
+      if (shown && shown !== key && headingToShownPanel(x, y)) {
+        aimTimer = setTimeout(function () {
+          if (hoveredItemKey !== key) return; // moved on — no switch
+          var last = pointerTrail[pointerTrail.length - 1];
+          var settled = performance.now() - lastPointerMove >= SETTLE_TIME;
+          if (settled || !last) previewPanelFor(key);
+          else requestPreview(key, last.x, last.y); // still moving: re-check
+        }, AIM_DELAY);
+        return;
+      }
+      previewPanelFor(key);
+    }
+
+    function togglePin(key) {
+      cancelPanelHide();
+      clearTimeout(aimTimer);
+      // A mouse click on a hovered check also makes it the preview, so the
+      // panel stays while hovered even after unpinning. Taps and keys don't.
+      previewPanel = hoveredItemKey === key ? key : null;
+      pinnedPanel = pinnedPanel === key ? null : key;
+      renderPanels();
+    }
+
+    // Working inside a panel (toggling its status, typing a plate number)
+    // pins it, so it can't vanish mid-task when the pointer drifts away.
+    function pinIfShown(key) {
+      if (shownPanel() === key && pinnedPanel !== key) {
+        cancelPanelHide();
+        pinnedPanel = key;
+        renderPanels();
+      }
+    }
+
+    function closePanels() {
+      cancelPanelHide();
+      clearTimeout(aimTimer);
+      var p = findPanel(shownPanel());
+      var card = p && document.getElementById(p.cardId);
+      var focusWasInside = !!(card && card.contains(document.activeElement));
+      previewPanel = null;
+      pinnedPanel = null;
+      renderPanels();
+      // Don't strand keyboard focus inside a panel that just hid
+      if (focusWasInside) document.getElementById(p.itemId).focus();
+    }
+
+    function initPanelReveal() {
+      var sidebar = document.getElementById("detectionSidebar");
+      if (!sidebar) return;
+
+      // Touch has no hover, so touch pointers skip straight to the click (pin)
+      sidebar.addEventListener("pointerenter", function (e) {
+        if (e.pointerType === "touch") return;
+        pointerTrail = [];
+        cancelPanelHide();
+      });
+      sidebar.addEventListener("pointermove", function (e) {
+        if (e.pointerType === "touch") return;
+        lastPointerMove = performance.now();
+        pointerTrail.push({ x: e.clientX, y: e.clientY });
+        if (pointerTrail.length > 4) pointerTrail.shift();
+      });
+      sidebar.addEventListener("pointerleave", function (e) {
+        if (e.pointerType === "touch") return;
+        clearTimeout(aimTimer);
+        pointerTrail = [];
+        var towardsPanel =
+          e.clientX >= sidebar.getBoundingClientRect().right - 2;
+        schedulePanelHide(towardsPanel ? travelGrace() : LEAVE_DELAY);
+      });
+
+      PANELS.forEach(function (p) {
+        var item = document.getElementById(p.itemId);
+        var card = document.getElementById(p.cardId);
+
+        if (item) {
+          item.addEventListener("pointerenter", function (e) {
+            if (e.pointerType === "touch") return;
+            hoveredItemKey = p.key;
+            requestPreview(p.key, e.clientX, e.clientY);
+          });
+          item.addEventListener("pointerleave", function (e) {
+            if (e.pointerType !== "touch" && hoveredItemKey === p.key) {
+              hoveredItemKey = null;
+            }
+          });
+          // Mouse click, touch tap, Enter and Space all arrive here
+          item.addEventListener("click", function () {
+            togglePin(p.key);
+          });
+        }
+
+        if (card) {
+          // The panel stays open while the pointer is on it
+          card.addEventListener("pointerenter", function (e) {
+            if (e.pointerType !== "touch" && shownPanel() === p.key) {
+              cancelPanelHide();
+            }
+          });
+          card.addEventListener("pointerleave", function (e) {
+            if (e.pointerType !== "touch" && previewPanel) {
+              schedulePanelHide(LEAVE_DELAY);
+            }
+          });
+          card.addEventListener("pointerdown", function () {
+            pinIfShown(p.key);
+          });
+          card.addEventListener("focusin", function () {
+            pinIfShown(p.key);
+          });
+        }
+      });
+
+      // Esc closes the panel (the access overlay handles its own Esc)
+      document.addEventListener("keydown", function (e) {
+        if (e.key !== "Escape" || !shownPanel()) return;
+        var overlay = document.getElementById("accessOverlay");
+        if (
+          overlay &&
+          (overlay.classList.contains("show") || overlay.contains(e.target))
+        ) {
+          return;
+        }
+        closePanels();
+      });
+
+      renderPanels();
+    }
+
+    applyPassMode();
+    updateAllSidebarItems();
+    initPanelReveal();
+  </script>
+</body>
+
+</html>

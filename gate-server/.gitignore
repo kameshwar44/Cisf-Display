@@ -1,0 +1,9 @@
+node_modules/
+data/
+server.log
+.env
+# device captures and per-record image copies (npm run generate)
+uploads/captures/
+uploads/people/
+uploads/vehicles/
+uploads/cargo/
