@@ -263,6 +263,31 @@ describe("pass presented at the gate", { skip }, () => {
     assert.equal(trail[0].by, "Duty Operator");
     assert.equal((await call("/api/gates/1/arrivals", { method: "POST", body: {} })).status, 422);
   });
+
+  test("pass type switch adds / drops the vehicle and cargo under the same ref", async () => {
+    const current = (await call("/api/gates/1/current")).data.transaction;
+    const patch = (body) => call(`/api/transactions/${current.id}`, { method: "PATCH", body });
+
+    const none = await patch({ mode: "full" });
+    assert.equal(none.status, 422);
+    assert.match(none.data.error, /No vehicle or cargo is registered under REF 14785058/);
+
+    await pool.query(
+      `INSERT INTO vehicles (ref_no, registration_no, pass_number, valid_from, valid_till)
+       VALUES ('14785058', 'TN09ZZ0001', '1', '01-JAN-2026 00:00', '31-DEC-2099 23:59')`,
+    );
+    const full = await patch({ mode: "full" });
+    assert.deepEqual(full.data.sections, ["visitor", "vehicle"]);
+    assert.equal(full.data.vehicle.plate, "TN09ZZ0001");
+    assert.equal(full.data.checks.vehicle, true);
+
+    const back = await patch({ mode: "visitor" });
+    assert.deepEqual(back.data.sections, ["visitor"]);
+    assert.equal(back.data.vehicle, null);
+    const trail = (await call(`/api/transactions/${current.id}/audit`)).data;
+    assert.equal(trail.filter((a) => a.action === "PASS_TYPE").length, 2);
+    assert.equal((await patch({ mode: "both" })).status, 422);
+  });
 });
 
 describe("history and monitoring", { skip }, () => {

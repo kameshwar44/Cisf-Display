@@ -482,9 +482,50 @@ async function lockOpen(client, id) {
 //   plateRead:  corrected registration number → vehicles.registration_no
 //   containers: [{ seq: 1|2, number, size, ei }] → cargo.container{n}_*
 //   gateMode:   "entry" | "exit"
+//   mode:       "visitor" | "full" — pass type (drop / add the vehicle and cargo filed under the same ref_no)
 export async function updateTransaction(pool, id, patch, user) {
   return withTransaction(pool, async (client) => {
-    const t = await lockOpen(client, id);
+    let t = await lockOpen(client, id);
+
+    // Pass type: "visitor" drops the vehicle and cargo; "full" adds the
+    // vehicle and cargo registered under the visitor's ref_no
+    if (patch.mode !== undefined) {
+      if (patch.mode !== "visitor" && patch.mode !== "full") {
+        throw new HttpError(422, "mode must be 'visitor' or 'full'");
+      }
+      if (!t.visitor_id) throw new HttpError(422, "This arrival has no visitor record");
+      const before = { vehicleId: t.vehicle_id, cargoId: t.cargo_id };
+      let vehicleId = null;
+      let cargoId = null;
+      let vehicleStatus = null;
+      let cargoStatus = null;
+      if (patch.mode === "full") {
+        const { ref_no: ref } = await one(client, "SELECT ref_no FROM visitors WHERE id = $1", [t.visitor_id]);
+        const vehicle = await one(client, "SELECT * FROM vehicles WHERE ref_no = $1 ORDER BY id DESC LIMIT 1", [ref]);
+        const cargo = await one(client, "SELECT * FROM cargo WHERE ref_no = $1 ORDER BY id DESC LIMIT 1", [ref]);
+        if (!vehicle && !cargo) {
+          throw new HttpError(422, `No vehicle or cargo is registered under REF ${ref}`);
+        }
+        vehicleId = vehicle?.id ?? null;
+        cargoId = cargo?.id ?? null;
+        if (vehicle) vehicleStatus = (await vehicleProblems(client, vehicle)).length ? STATUS_FAIL : STATUS_OK;
+        if (cargo) cargoStatus = cargoProblems(cargo).length ? STATUS_FAIL : STATUS_OK;
+      }
+      if (before.vehicleId !== vehicleId || before.cargoId !== cargoId) {
+        await client.query(
+          `UPDATE gate_transactions SET vehicle_id = $1, cargo_id = $2, vehicle_status = $3, cargo_status = $4
+            WHERE id = $5`,
+          [vehicleId, cargoId, vehicleStatus, cargoStatus, id],
+        );
+        await audit(client, id, user.username, "PASS_TYPE", {
+          to: patch.mode,
+          from: before,
+          vehicleId,
+          cargoId,
+        });
+        t = await one(client, "SELECT * FROM gate_transactions WHERE id = $1", [id]);
+      }
+    }
 
     if (patch.checks && typeof patch.checks === "object") {
       for (const key of SECTIONS) {

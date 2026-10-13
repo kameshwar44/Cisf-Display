@@ -8,6 +8,14 @@ const pool = createPool();
 try {
   const terms = [];
   for (const arg of process.argv.slice(2)) {
+    // face-mismatch: lists pass numbers whose live face is someone else
+    if (arg === "face-mismatch") {
+      const { rows } = await pool.query(
+        "SELECT pass_number FROM visitors WHERE frs_verified = false AND ref_no ~ '^15' ORDER BY ref_no LIMIT 3",
+      );
+      terms.push(...rows.map((r) => r.pass_number));
+      continue;
+    }
     if (!arg.startsWith("ref:")) {
       terms.push(arg);
       continue;

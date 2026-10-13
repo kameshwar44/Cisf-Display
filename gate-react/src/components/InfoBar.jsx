@@ -1,8 +1,9 @@
 import { GateButton, cls } from "./common.jsx";
 
+// sections: what the current arrival includes, e.g. ["visitor", "vehicle", "cargo"]
 export default function InfoBar({
   gate,
-  passMode,
+  sections = ["visitor"],
   onTogglePassMode,
   gateMode,
   onToggleGateMode,
@@ -11,8 +12,10 @@ export default function InfoBar({
   onApprove,
 }) {
   const isEntry = gateMode === "entry";
-  const passLabel =
-    passMode === "visitor" ? "VISITOR ONLY" : "VISITOR + VEHICLE + CARGO";
+  const visitorOnly = sections.length === 1 && sections[0] === "visitor";
+  const passLabel = visitorOnly
+    ? "VISITOR ONLY"
+    : sections.map((s) => s.toUpperCase()).join(" + ");
 
   return (
     <div className="info-bar">
@@ -26,13 +29,18 @@ export default function InfoBar({
             <span className="pill-label">Lane</span>
             <span className="pill-value">{gate.lane}</span>
           </div>
-          {/* Clickable only when the server allows demo scans */}
+          {/* Click: switch between visitor only and the vehicle + cargo
+              registered under the same REF */}
           {onTogglePassMode ? (
             <button
               type="button"
               className="pill pass-mode-btn"
               onClick={onTogglePassMode}
-              title="Demo: simulate an arrival with the other pass type"
+              title={
+                visitorOnly
+                  ? "Click to add the vehicle and cargo registered under this REF"
+                  : "Click to verify the visitor only"
+              }
             >
               <span className="pill-label">Pass</span>
               <span className="pill-value">{passLabel}</span>

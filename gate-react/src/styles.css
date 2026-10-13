@@ -3041,3 +3041,185 @@ color: #fca5a5;
     display: none;
   }
 }
+
+/* ═══════════ CARD READABILITY — details are never squeezed or overlapped ═══════════
+   On short screens the photos give up space first; text rows always keep
+   their full height so CISF staff can read every value before deciding. */
+
+/* Rows share any spare space but never shrink below their content */
+.card-body .data-row {
+  flex: 1 0 auto;
+  min-height: 32px;
+}
+
+.card-body .data-row.cn-row {
+  min-height: 40px;
+}
+
+.card-body .dr-value,
+.card-body .dr-label {
+  line-height: 1.25;
+}
+
+/* Camera image shrinks first (to 120px at least) and shows the whole
+   picture — letterboxed, so a number plate is never cropped off */
+.panels .card-body > .cam-box {
+  flex: 0 1 auto;
+  min-height: 120px;
+  height: auto;
+}
+
+.panels .cam-box img {
+  object-fit: contain;
+}
+
+/* Faces scale with the screen height, never below 110px */
+.panels .face-img {
+  max-height: clamp(110px, calc(100vh - 560px), 32vh);
+  min-height: 110px;
+}
+
+.panels .face-compare {
+  max-width: none;
+  justify-content: center;
+  grid-template-columns: repeat(2, minmax(0, calc(clamp(110px, calc(100vh - 560px), 32vh) * 4 / 3)));
+}
+
+.app[data-pass="visitor"] .panels .face-compare {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* Visitor-only ID card: rows hold their text height too */
+@media (min-width: 769px) {
+  .app[data-pass="visitor"] #cardVisitor .card-body {
+    grid-template-rows: repeat(8, minmax(min-content, 1fr)) auto;
+  }
+
+  .app[data-pass="visitor"] #cardVisitor .face-slot.registered .face-img {
+    max-height: none;
+  }
+
+  /* Last resort on very short screens: scroll inside the card */
+  .card-body {
+    overflow-y: auto;
+  }
+}
+
+/* The status strip (VERIFIED / DENIED) always stays in view at the foot of
+   the card; on very short screens the rows scroll under it */
+@media (min-width: 769px) {
+  .card-body > .vs-strip {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+  }
+}
+
+/* Short screens (e.g. laptops at 125% zoom): slightly tighter minimums */
+@media (min-width: 769px) and (max-height: 760px) {
+  .card-body .data-row {
+    min-height: 27px;
+  }
+
+  .card-body .data-row.cn-row {
+    min-height: 36px;
+  }
+
+  .panels .face-img {
+    min-height: 96px;
+  }
+
+  .panels .card-body > .cam-box {
+    min-height: 100px;
+  }
+}
+
+/* Visitor card with vehicle + cargo: ID-card layout like the visitor-only
+   view — live and registered faces side by side on the left at full card
+   height, all details on the right, status strip across the bottom */
+@media (min-width: 769px) {
+  .app[data-pass="full"] #cardVisitor .card-body {
+    display: grid;
+    grid-template-columns: minmax(0, 44%) minmax(0, 1fr);
+    grid-template-rows: repeat(8, minmax(min-content, 1fr)) auto;
+    column-gap: 18px;
+    padding: 14px 18px 12px;
+  }
+
+  .app[data-pass="full"] #cardVisitor .face-compare {
+    grid-column: 1;
+    grid-row: 1 / 9;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 1fr);
+    align-items: stretch;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+  }
+
+  .app[data-pass="full"] #cardVisitor .face-slot {
+    min-height: 0;
+    height: 100%;
+  }
+
+  .app[data-pass="full"] #cardVisitor .face-img {
+    flex: 1;
+    min-height: 96px;
+    max-height: none;
+    aspect-ratio: auto;
+  }
+
+  .app[data-pass="full"] #cardVisitor .data-row {
+    grid-column: 2;
+  }
+
+  .app[data-pass="full"] #vsStrip1 {
+    grid-column: 1 / -1;
+    margin-top: 12px;
+  }
+}
+
+/* Vehicle and Cargo cards: same ID-card layout — camera image on the left
+   at full card height (whole picture, never cropped), the 7 details on the
+   right, status strip across the bottom */
+@media (min-width: 769px) {
+  #cardVehicle .card-body,
+  #cardCargo .card-body {
+    display: grid;
+    grid-template-columns: minmax(0, 46%) minmax(0, 1fr);
+    grid-template-rows: repeat(7, minmax(min-content, 1fr)) auto;
+    column-gap: 18px;
+    padding: 14px 18px 12px;
+  }
+
+  #cardVehicle .card-body > .cam-box,
+  #cardCargo .card-body > .cam-box {
+    grid-column: 1;
+    grid-row: 1 / 8;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    min-height: 0;
+    aspect-ratio: auto;
+    margin: 0;
+  }
+
+  #cardVehicle .cam-box img,
+  #cardCargo .cam-box img {
+    object-fit: contain;
+  }
+
+  #cardVehicle .data-row,
+  #cardCargo .data-row {
+    grid-column: 2;
+  }
+
+  #vsStrip2,
+  #vsStrip3 {
+    grid-column: 1 / -1;
+    margin-top: 12px;
+  }
+}

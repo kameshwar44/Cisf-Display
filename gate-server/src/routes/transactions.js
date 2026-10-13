@@ -47,7 +47,7 @@ export default function transactionRoutes(pool) {
     res.json(await auditTrail(pool, idParam(req)));
   });
 
-  // Operator corrections: { checks?, plateRead?, containers?, gateMode? }
+  // Operator corrections: { mode?, checks?, plateRead?, containers?, gateMode? }
   router.patch("/:id", auth, async (req, res) => {
     const gateId = await updateTransaction(pool, idParam(req), req.body ?? {}, req.user);
     await broadcastCurrent(pool, gateId);

@@ -12,6 +12,7 @@ export default defineConfig({
     proxy: {
       "/api": GATE_SERVER,
       "/uploads": GATE_SERVER,
+      "/faces": GATE_SERVER,
     },
   },
 });

@@ -15,7 +15,8 @@
     "test": "node --env-file-if-exists=.env --test test/",
     "generate": "node --env-file-if-exists=.env scripts/generate-records.js",
     "try-search": "node --env-file-if-exists=.env scripts/try-search.js",
-    "check-password": "node --env-file-if-exists=.env scripts/check-password.js"
+    "check-password": "node --env-file-if-exists=.env scripts/check-password.js",
+    "assign-faces": "node --env-file-if-exists=.env scripts/assign-faces.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

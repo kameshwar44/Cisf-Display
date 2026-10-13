@@ -19,6 +19,8 @@ export const config = {
   // dates are shown in it
   timeZone: process.env.DISPLAY_TZ || "Asia/Kolkata",
   uploadsDir: path.join(root, "uploads"),
+  // Face photos, served at /faces/ (npm run assign-faces names them <ref>.png)
+  facesDir: process.env.FACES_DIR || path.resolve(root, "..", "gate-react", "src", "assets", "Faceimages"),
   // The built React app; served by this server when present (npm run build)
   webDist: path.resolve(root, "..", "gate-react", "dist"),
   maxImageBytes: 4 * 1024 * 1024,

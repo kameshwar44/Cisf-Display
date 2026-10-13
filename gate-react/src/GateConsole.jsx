@@ -148,6 +148,22 @@ export default function GateConsole({
     );
   };
 
+  // PASS pill: visitor only ⇄ visitor + the vehicle / cargo filed under
+  // the same REF (the server looks them up)
+  const togglePassMode = () => {
+    if (!txn) return setNotice("No arrival at the gate — enter a pass number first");
+    if (txn.decision) {
+      return setNotice("This arrival is already decided — the pass type can no longer change");
+    }
+    if (busy) return;
+    const mode = visitorOnly ? "full" : "visitor";
+    run(async () => {
+      await patchTxn({ mode });
+      if (mode === "full") panels.pin("visitor");
+      else panels.close();
+    });
+  };
+
   // A pass shown at the gate becomes the arrival to verify. Returns true
   // once it is on screen (so the search box can clear).
   const startArrival = async (hit) => {
@@ -227,8 +243,8 @@ export default function GateConsole({
 
       <InfoBar
         gate={gate}
-        passMode={passMode}
-        onTogglePassMode={null}
+        sections={activeKeys}
+        onTogglePassMode={togglePassMode}
         gateMode={gate.direction}
         onToggleGateMode={toggleGateMode}
         allClear={allClear}

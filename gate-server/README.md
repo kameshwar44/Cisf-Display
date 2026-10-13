@@ -34,7 +34,8 @@ On start, the server creates one table, `audit_log`, if it does not exist. **It 
 | `npm run create-user -- <username> <password> ["Full Name"] [role]` | Add an operator to `users`, or reset a password (bcrypt) |
 | `npm run check-password -- <password>` | Which users that password works for (prints usernames only) |
 | `npm run generate [-- --count 500 --reset --seed 7]` | Generate sample pass records with per-record image copies (below) |
-| `npm run try-search -- <pass no.> [ref:<ref_no>]` | Try the pass search from the terminal (read-only) |
+| `npm run try-search -- <pass no.> [ref:<ref_no>] [face-mismatch]` | Try the pass search from the terminal (read-only) |
+| `npm run assign-faces` | Give generated records the photos in `gate-react/src/assets/Faceimages` (below) |
 | `npm test` | API tests in a separate, throwaway `cisf_test` database (your `cisf` data is never used) |
 
 **Single-process deployment:** run `npm run build` in `gate-react`. This server then serves the display at http://localhost:4000.
@@ -63,6 +64,14 @@ If the current arrival has not been decided yet, starting a new one asks for con
   uploads/cargo/<ref>/container.jpg
   ```
   **To use a real photo,** overwrite that file with the same name, for example `uploads/people/15000042/registered.png`. If your photo is a JPEG, either save it as `.png` or update `registered_face_image` in `visitors` to point at the new file name.
+- **Face photos:** `npm run assign-faces` takes the photos in `gate-react/src/assets/Faceimages` (or `FACES_DIR`) and does the following:
+  - renames each photo not yet assigned to `<ref>.png`, for the next generated record without one
+  - sets `registered_face_image` and `live_feed_image` to `/faces/<ref>.png`
+  - lets the server serve the folder at `/faces/`, so the display and search results load each person's own photo
+  - gives records with a face mismatch (`frs_verified = false`) another person's photo as the live capture
+  - lists the original file names in `Faceimages/_original-names.csv`
+
+  It is safe to run again. Photos you add to the folder later go to the records still without one, so to change one person's photo, overwrite `<ref>.png`.
 - **Reruns:** `npm run generate -- --reset` removes the generated records (and their transactions, blacklist entries and images) before generating again. Records that were not generated are never touched.
 
 ## How the tables are used

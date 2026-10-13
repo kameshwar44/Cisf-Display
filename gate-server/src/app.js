@@ -47,6 +47,8 @@ export function createApp(pool) {
 
   // Camera images (registered faces, live captures, ANPR / container shots)
   app.use("/uploads", express.static(config.uploadsDir, { maxAge: "1h" }));
+  // Face photos (visitors.registered_face_image = /faces/<ref>.png)
+  app.use("/faces", express.static(config.facesDir, { maxAge: "1h" }));
 
   // Production: serve the built React display from the same origin
   if (fs.existsSync(path.join(config.webDist, "index.html"))) {
